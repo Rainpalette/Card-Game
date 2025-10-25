@@ -1,0 +1,345 @@
+{
+    "cards": [
+        {
+            "name": "Normal Attack",
+            "mana_cost": 1,
+            "description": "Deal 5 damage to the enemy.",
+            "type": "Attack",
+            "rarity": "Common",
+            "cooldown": 3,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "deal_damage",
+                        "value": 5
+                    }
+                ]
+            },
+            "backstory": "Simple and direct brute force—perfect for dealing with mindless foes."
+        },
+        {
+            "name": "Heal",
+            "mana_cost": 1,
+            "description": "Restore 3 HP to yourself.",
+            "type": "Heal",
+            "rarity": "Common",
+            "cooldown": 2,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "heal",
+                        "value": 3
+                    }
+                ]
+            },
+            "backstory": "Just a minor wound—nothing worth worrying about."
+        },
+        {
+            "name": "Defense",
+            "mana_cost": 1,
+            "description": "Gain 3 shield stacks.",
+            "type": "Defense",
+            "rarity": "Common",
+            "cooldown": 2,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "shield",
+                        "value": 3
+                    }
+                ]
+            },
+            "backstory": "Defense can be a form of attack—after all, battle favors the one who waits for a crack to appear."
+        },
+        {
+            "name": "Shield Counter",
+            "mana_cost": 2,
+            "description": "Gain 3 shield stacks and deal 6 damage to the enemy.",
+            "type": "Defense",
+            "rarity": "Common",
+            "cooldown": 4,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "shield",
+                        "value": 3
+                    },
+                    {
+                        "type": "deal_damage",
+                        "value": 6
+                    }
+                ]
+            },
+            "backstory": "I took your blow—now it’s your turn!"
+        },
+        {
+            "name": "Holy Light",
+            "mana_cost": 1,
+            "description": "Deal 3 damage, restore 2HP",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 3,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "deal_damage",
+                        "value": 3
+                    },
+                    {
+                        "type": "heal",
+                        "value": 2
+                    }
+                ]
+            },
+            "backstory": "There are no gods in this world—but faith still lingers."
+        },
+        {
+            "name": "Intimidate",
+            "mana_cost": 1,
+            "description": "Inflict 1 layer of defense reduction on the enemy for 3 turns.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 3,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "reduce_defense",
+                        "value": 1,
+                        "duration": 3
+                    },
+                    {
+                        "type": "add_effect",
+                        "effect": "Memory"
+                    }
+                ]
+            },
+            "backstory": "Awaken the primal fear within—let instinct drive the coward to flee."
+        },
+        {
+            "name": "Critical Strike",
+            "mana_cost": 1,
+            "description": "Deal 8 damage to the enemy.",
+            "type": "Attack",
+            "rarity": "Common",
+            "cooldown": 5,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "deal_damage",
+                        "value": 8
+                    }
+                ]
+            },
+            "backstory": "A mighty swing with crushing power—just make sure you can handle the recoil."
+        },
+        {
+            "name": "Trick",
+            "mana_cost": 2,
+            "description": "Remove the enemy's shield and deal damage equal to the shield value removed.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 5,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "remove_shield",
+                        "deal_equal_damage": true
+                    }
+                ]
+            },
+            "backstory": "The difference between us lies here—you’ve already walked into my trap."
+        },
+        {
+            "name": "Frozen Seal",
+            "mana_cost": 3,
+            "description": "Gain 8 shield stacks and fall into a Sleep state. While asleep, you cannot act, but at the start of each turn, you may choose one card to reduce its cooldown by 2 turns. Sleep ends when all shields are removed.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 8,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "shield",
+                        "value": 8
+                    },
+                    {
+                        "type": "apply_status",
+                        "status": "sleep",
+                        "duration": "until_shield_broken"
+                    },
+                    {
+                        "type": "reduce_cooldown",
+                        "value": 2,
+                        "target": "one_card_each_turn"
+                    }
+                ]
+            },
+            "backstory": "Wrapped in eternal winter, he has watched generations rise and fall. Time left him untouched, ageless, and unscarred. Staring at the pocket watch in his hand, he wonders what meaning endless life could hold. Perhaps his thoughts and memories have long frozen with the wind—forever sealed in ice."
+        },
+        {
+            "name": "Snow Dance",
+            "mana_cost": 1,
+            "description": "Apply the 'Memory' effect on the enemy: damage dealt is reduced by 1, and damage received is increased by 1 for 3 turns.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 3,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "add_effect",
+                        "effect": "Memory",
+                        "duration": 3,
+                        "damage_dealt_modifier": -1,
+                        "damage_received_modifier": 1
+                    }
+                ]
+            },
+            "backstory": "A golden-haired girl dances in the snow, trembling under the biting wind. Yet her movements remain elegant, flowing with the distant melody. From afar, Cheryl watches her—the girl’s grace mirrors someone he once knew. For the first time in ages, his heart stirs again. Clutching his pocket watch, he whispers to himself: this time, he’ll be selfish."
+        },
+        {
+            "name": "Winter Festival",
+            "mana_cost": 1,
+            "description": "Gain the 'Blessing' effect: all negative effects are nullified for 2 turns.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 5,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "add_effect",
+                        "effect": "Blessing",
+                        "duration": 2
+                    }
+                ]
+            },
+            "backstory": "In the land of eternal frost, a single day each year brings warmth. The Winter Festival—small but lively—where people shed their coats and dance barefoot on thawed ground. They call it the gods’ blessing, but he knows better. There are no gods here—only borrowed warmth."
+        },
+        {
+            "name": "Iron Blood",
+            "mana_cost": 1,
+            "description": "Gain the 'Iron Blood' effect for 3 turns. All non-attack cards in hand become 'Judgment', which deals 5 damage and has a cooldown of 5. When Iron Blood ends, all cards retain their current cooldowns.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 6,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "add_effect",
+                        "effect": "Iron Blood",
+                        "duration": 3
+                    },
+                    {
+                        "type": "transform_cards",
+                        "from": "non_attack",
+                        "to": {
+                            "name": "Judgment",
+                            "mana_cost": 1,
+                            "description": "Deal 5 damage to the enemy.",
+                            "type": "Attack",
+                            "cooldown": 5,
+                            "effect": {
+                                "actions": [
+                                    {
+                                        "type": "deal_damage",
+                                        "value": 5
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            "backstory": "He once believed mercy was strength, but the battlefield taught him otherwise. Every drop of blood spilt hardened his resolve. When the world turned its back on justice, he became its blade—cold, unyielding, and drenched in crimson."
+        },
+        {
+            "name": "Candy Bullet",
+            "mana_cost": 1,
+            "description": "Deal 3 damage and reduce the cooldown of all attack cards by 1 turn.",
+            "type": "Attack",
+            "rarity": "Common",
+            "cooldown": 5,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "deal_damage",
+                        "value": 3
+                    },
+                    {
+                        "type": "reduce_cooldown",
+                        "target": "attack_cards",
+                        "value": 1
+                    }
+                ]
+            },
+            "backstory": "\"So many candies here.\"  \n\"Please, I’m sick of sweets. Haven’t we had enough sugar already?\"  \n\"It’s clean food. Until we find the exit, we can’t afford to be picky.\"  \n\"Spare me...\""
+        },
+        {
+            "name": "Mist Veil",
+            "mana_cost": 1,
+            "description": "Apply 3 layers of Fog and 1 layer of Lost to the enemy. Lost: when taking damage, the target gains Fog equal to the damage taken.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 6,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "apply_status",
+                        "status": "Fog",
+                        "stacks": 3
+                    },
+                    {
+                        "type": "apply_status",
+                        "status": "Lost",
+                        "description": "When taking damage, gain equal stacks of Fog."
+                    }
+                ]
+            },
+            "backstory": "The accident's smoke spread across the land, choking every corner. The ceaseless machines spewed not smoke, but poison—an ever-expanding cloud that devoured the world."
+        },
+        {
+            "name": "Deep Mist",
+            "mana_cost": 1,
+            "description": "Apply 6 layers of Fog to the enemy. At the end of your next turn, set the enemy's Fog stacks to 3.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 3,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "apply_status",
+                        "status": "Fog",
+                        "stacks": 6
+                    },
+                    {
+                        "type": "delayed_action",
+                        "trigger": "end_of_next_turn",
+                        "action": {
+                            "type": "set_status_stacks",
+                            "status": "Fog",
+                            "value": 3
+                        }
+                    }
+                ]
+            },
+            "backstory": "Wearing a gas mask, he ventured into the factory’s core, where he found the unconscious Dahl. Carrying her back, he followed what he thought was the exit—but the path had changed. Lost in the haze, he realized the mist had swallowed even his memories."
+        },
+        {
+            "name": "Midnight Hour",
+            "mana_cost": 1,
+            "description": "Apply 'Midnight' to the enemy: Fog damage cannot be blocked by shields, and the same amount of damage is then dealt to the shield.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 4,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "add_effect",
+                        "effect": "Midnight",
+                        "description": "Fog damage bypasses shields and also damages them equally."
+                    }
+                ]
+            },
+            "backstory": "At midnight, the mind grows restless. Memories of their near-death escape replay endlessly—but it no longer matters. They survived the mist, and that was enough."
+        }
+    ]
+}

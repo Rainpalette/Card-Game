@@ -1,0 +1,330 @@
+{
+    "cards": [
+        {
+            "name": "Normal Attack",
+            "mana_cost": 1,
+            "description": "Deal 5 damage to the enemy.",
+            "type": "Attack",
+            "rarity": "Common",
+            "cooldown": 3,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "deal_damage",
+                        "value": 5
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Heal",
+            "mana_cost": 1,
+            "description": "Restore 3 HP to yourself.",
+            "type": "Heal",
+            "rarity": "Common",
+            "cooldown": 2,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "heal",
+                        "value": 3
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Defense",
+            "mana_cost": 1,
+            "description": "Gain 3 shield stacks.",
+            "type": "Defense",
+            "rarity": "Common",
+            "cooldown": 2,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "shield",
+                        "value": 3
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Shield Counter",
+            "mana_cost": 2,
+            "description": "Gain 3 shield stacks and deal 6 damage to the enemy.",
+            "type": "Defense",
+            "rarity": "Common",
+            "cooldown": 4,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "shield",
+                        "value": 3
+                    },
+                    {
+                        "type": "deal_damage",
+                        "value": 6
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Holy Light",
+            "mana_cost": 1,
+            "description": "Deal 3 damage, restore 2HP",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 3,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "deal_damage",
+                        "value": 3
+                    },
+                    {
+                        "type": "heal",
+                        "value": 2
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Intimidate",
+            "mana_cost": 1,
+            "description": "Inflict 1 layer of defense reduction on the enemy for 3 turns.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 3,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "reduce_defense",
+                        "value": 1,
+                        "duration": 3
+                    },
+                    {
+                        "type": "add_effect",
+                        "effect": "Memory"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Critical Strike",
+            "mana_cost": 1,
+            "description": "Deal 8 damage to the enemy.",
+            "type": "Attack",
+            "rarity": "Common",
+            "cooldown": 5,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "deal_damage",
+                        "value": 8
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Trick",
+            "mana_cost": 2,
+            "description": "Remove the enemy's shield and deal damage equal to the shield value removed.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 5,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "remove_shield",
+                        "deal_equal_damage": true
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Frozen Seal",
+            "mana_cost": 3,
+            "description": "Gain 8 shield stacks and fall into a Sleep state. While asleep, you cannot act, but at the start of each turn, you may choose one card to reduce its cooldown by 2 turns. Sleep ends when all shields are removed.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 8,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "shield",
+                        "value": 8
+                    },
+                    {
+                        "type": "apply_status",
+                        "status": "sleep",
+                        "duration": "until_shield_broken"
+                    },
+                    {
+                        "type": "reduce_cooldown",
+                        "value": 2,
+                        "target": "one_card_each_turn"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Snow Dance",
+            "mana_cost": 1,
+            "description": "Apply the 'Memory' effect on the enemy: damage dealt is reduced by 1, and damage received is increased by 1 for 3 turns.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 3,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "add_effect",
+                        "effect": "Memory",
+                        "duration": 3,
+                        "damage_dealt_modifier": -1,
+                        "damage_received_modifier": 1
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Winter Festival",
+            "mana_cost": 1,
+            "description": "Gain the 'Blessing' effect: all negative effects are nullified for 2 turns.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 5,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "add_effect",
+                        "effect": "Blessing",
+                        "duration": 2
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Iron Blood",
+            "mana_cost": 1,
+            "description": "Gain the 'Iron Blood' effect for 3 turns. All non-attack cards in hand become 'Judgment', which deals 5 damage and has a cooldown of 5. When Iron Blood ends, all cards retain their current cooldowns.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 6,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "add_effect",
+                        "effect": "Iron Blood",
+                        "duration": 3
+                    },
+                    {
+                        "type": "transform_cards",
+                        "from": "non_attack",
+                        "to": {
+                            "name": "Judgment",
+                            "mana_cost": 1,
+                            "description": "Deal 5 damage to the enemy.",
+                            "type": "Attack",
+                            "cooldown": 5,
+                            "effect": {
+                                "actions": [
+                                    {
+                                        "type": "deal_damage",
+                                        "value": 5
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Candy Bullet",
+            "mana_cost": 1,
+            "description": "Deal 3 damage and reduce the cooldown of all attack cards by 1 turn.",
+            "type": "Attack",
+            "rarity": "Common",
+            "cooldown": 5,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "deal_damage",
+                        "value": 3
+                    },
+                    {
+                        "type": "reduce_cooldown",
+                        "target": "attack_cards",
+                        "value": 1
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Mist Veil",
+            "mana_cost": 1,
+            "description": "Apply 3 layers of Fog and 1 layer of Lost to the enemy. Lost: when taking damage, the target gains Fog equal to the damage taken.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 6,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "apply_status",
+                        "status": "Fog",
+                        "stacks": 3
+                    },
+                    {
+                        "type": "apply_status",
+                        "status": "Lost",
+                        "description": "When taking damage, gain equal stacks of Fog."
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Deep Mist",
+            "mana_cost": 1,
+            "description": "Apply 6 layers of Fog to the enemy. At the end of your next turn, set the enemy's Fog stacks to 3.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 3,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "apply_status",
+                        "status": "Fog",
+                        "stacks": 6
+                    },
+                    {
+                        "type": "delayed_action",
+                        "trigger": "end_of_next_turn",
+                        "action": {
+                            "type": "set_status_stacks",
+                            "status": "Fog",
+                            "value": 3
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Midnight Hour",
+            "mana_cost": 1,
+            "description": "Apply 'Midnight' to the enemy: Fog damage cannot be blocked by shields, and the same amount of damage is then dealt to the shield.",
+            "type": "Effect",
+            "rarity": "Common",
+            "cooldown": 4,
+            "effect": {
+                "actions": [
+                    {
+                        "type": "add_effect",
+                        "effect": "Midnight",
+                        "description": "Fog damage bypasses shields and also damages them equally."
+                    }
+                ]
+            }
+        }
+    ]
+    
+}

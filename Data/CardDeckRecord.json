@@ -1,0 +1,43 @@
+[
+    {
+        "deck_name": "Default Deck",
+        "cards": [
+            "Normal Attack",
+            "Heal",
+            "Defense",
+            "Shield Counter",
+            "Holy Light",
+            "Intimidate",
+            "Critical Strike",
+            "Trick"
+        ]
+    },
+    {
+        "deck_name": "New Deck",
+        "cards": [
+            "Normal Attack",
+            "Defense",
+            "Shield Counter",
+            "Holy Light",
+            "Intimidate",
+            "Critical Strike",
+            "Trick",
+            "Heal"
+        ]
+    },
+    {
+        "deck_name": "Radiel",
+        "cards": [
+            "Normal Attack",
+            "Heal",
+            "Critical Strike"
+        ]
+    },
+    {
+        "deck_name": "Hollow Knight",
+        "cards": [
+            "Trick",
+            "Shield Counter"
+        ]
+    }
+]
