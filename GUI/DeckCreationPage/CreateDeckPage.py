@@ -120,6 +120,7 @@ class CreateDeckPage(QWidget):
     send_card_name = pyqtSignal(str)
     send_showcase_card_name = pyqtSignal(str)
     save_deck = pyqtSignal(dict)
+    set_current_deck = pyqtSignal(int)
     def __init__(self,deck=DeckStage()):
         super().__init__()
         self.deck = deck
@@ -213,7 +214,14 @@ class CreateDeckPage(QWidget):
 
         self.deck_save_button = QPushButton("Save")
         self.deck_save_button.setFixedSize(50,50)
-        self.deck_page_layout.addWidget(self.deck_save_button,0,2)
+        button_layout = QVBoxLayout()
+        self.set_current_deck_button = QPushButton("Set\nCurrent\nDeck")
+        self.set_current_deck_button.setFixedSize(50,60)
+        self.set_current_deck_button.setStyleSheet("font-size: 12px;")
+
+        button_layout.addWidget(self.deck_save_button)
+        button_layout.addWidget(self.set_current_deck_button)
+        self.deck_page_layout.addLayout(button_layout,0,2)
         self.deck_save_button.setStyleSheet("font-size: 20px;")
         self.deck_save_button.clicked.connect(self.save_card_deck)
 
@@ -260,6 +268,7 @@ class CreateDeckPage(QWidget):
     
     def on_click_exit_deck(self):
         self.switch_to_page.emit(8)
+        self.current_deck_name = ""
     
     def on_card_right_clicked(self,name):
         # self.change_to_page.emit(4)
@@ -346,6 +355,10 @@ class CreateDeckPage(QWidget):
         }
         self.save_deck.emit(data)
         self.current_deck_name = ""
+    
+    def set_as_current_deck(self):
+        deck_name = self.current_deck_name 
+        self.set_current_deck.emit(deck_name)
     # def save_deck(self,dictionary,deck_stage):
     #     with open("Data/CardDeckRecord.json", "w", encoding="utf-8") as f:
     #         json.dump(dictionary, f, ensure_ascii=False, indent=4)

@@ -2,9 +2,11 @@ class PlayerSetting:
     def __init__(self, name="", health=0, mana=0, shield=0):
         self.name = name
         self.health = health
+        self.before_change_health = health
         self.mana = mana
         self.effects = []
         self.shield = shield
+        self.shield_before_change = 0
         self.max_mana = 2
         self.maximal_mana = 6
         self.defense = 0

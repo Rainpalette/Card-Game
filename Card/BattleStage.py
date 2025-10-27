@@ -25,6 +25,7 @@ class BattleStage:
         self.player = PlayerSetting("Hero", 50, 2, 0)
         self.player_copy = self.player
         self.card_effect = CardEffect()
+        # self.card_setting = CardSetting(card_effect=self.card_effect)
         self.game = GameSetting()
         self.player_deck = DeckStage()
         self.battle = BattleContent(self.mob, self.player)
@@ -136,3 +137,7 @@ class BattleStage:
         self.player.mana -= card.mana_cost
         card.use_card(self.battle)
         card.cooldown_card()
+    
+    def calculate_damage(self, healthBefore, healthAfter):
+        base_damage = healthBefore - healthAfter
+        return base_damage

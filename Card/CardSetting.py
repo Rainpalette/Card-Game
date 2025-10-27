@@ -10,6 +10,7 @@ class CardSetting(ABC):
         self.description = description
         self.type = card_type
         self.rarity = rarity
+        # self.card_effect = card_effect
         self.cooldown = cooldown
         self.current_cooldown = 0
 

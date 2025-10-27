@@ -18,6 +18,9 @@ class Card(QWidget):
         # layout.addWidget(self.setText(name))
         # layout.addWidget(card_icon)
         # self.setLayout(layout)
+        self.opacity_effect = QGraphicsOpacityEffect()
+        self.opacity_effect.setOpacity(1.0)
+        self.setGraphicsEffect(self.opacity_effect)
         self.name = name
         self.image_path = image_path
         self.pixmap = QPixmap(self.image_path).scaled(150,350,Qt.KeepAspectRatio)
@@ -25,6 +28,8 @@ class Card(QWidget):
         self.card_name.setAlignment(Qt.AlignCenter)
         self.card_image = QLabel()
         self.card_image.setPixmap(self.pixmap)
+        
+        
         self.card_image.setAlignment(Qt.AlignCenter)
         self.id =0
         self.setFixedSize(200,250)
@@ -53,19 +58,45 @@ class Card(QWidget):
                 
             }
         """)
+        
+        self.card_cooldown_reminder = QLabel("5", self)
+        self.card_cooldown_reminder.setStyleSheet("""
+            QLabel {
+                font-size: 70px;
+                color: black;
+                background-color: transparent;
+            }
+        """)
+        self.card_cooldown_reminder.move(40,50)
+        self.card_cooldown_reminder.setFixedSize(70,70)
+        
+        self.card_cooldown_reminder.hide()
+        self.label_effect = QGraphicsOpacityEffect(self.card_cooldown_reminder)
+        self.label_effect.setOpacity(1.0)
+        self.card_cooldown_reminder.setGraphicsEffect(self.label_effect)
+        self.card_cooldown_reminder.raise_()
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.leftClicked.emit(self.id)
         elif event.button() == Qt.RightButton:
             self.rightClicked.emit(self.name)
     
-    def in_cooldown(self):
+    def in_cooldown(self,current_cooldown=5):
         #self.setWindowOpacity(0.5)
-        self.setGraphicsEffect(QGraphicsOpacityEffect(opacity=0.5))
+        # self.setGraphicsEffect(QGraphicsOpacityEffect(opacity=0.5))
+        self.opacity_effect.setOpacity(0.5)
+        self.label_effect.setOpacity(1.0)
+        # self.card_cooldown_reminder.setText(str(current_cooldown))
+        # self.card_cooldown_reminder.setGraphicsEffect(QGraphicsOpacityEffect(opacity=2.0))
+        # self.card_cooldown_reminder.show()
+        self.card_cooldown_reminder.setText(str(current_cooldown))
+        self.card_cooldown_reminder.raise_()
+        self.card_cooldown_reminder.show()
     
     def cooldown_end(self):
-        #self.setWindowOpacity(1.0)
-        self.setGraphicsEffect(QGraphicsOpacityEffect(opacity=1.0))
+        self.opacity_effect.setOpacity(1.0)
+        self.card_cooldown_reminder.hide()
+
     def refresh_card(self):
         self.card_name.setText(self.name)
         self.pixmap = QPixmap(self.image_path).scaled(150,350,Qt.KeepAspectRatio)
@@ -82,6 +113,13 @@ class Card(QWidget):
         #         background: transparent;
         #     }
         # """)
+    def update_cooldown_display(self, cooldown):
+        self.card_cooldown_reminder.setText(str(cooldown))
+        if not hasattr(self, 'label_effect') or not self.label_effect:
+            self.label_effect = QGraphicsOpacityEffect(self.card_cooldown_reminder)
+            self.card_cooldown_reminder.setGraphicsEffect(self.label_effect)
+        self.label_effect.setOpacity(1.0)
+        self.card_cooldown_reminder.show()
 
 class CardGridWindow(QWidget):
     switch_to_page = pyqtSignal(int)

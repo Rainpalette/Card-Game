@@ -5,10 +5,12 @@ class MobSetting(ABC):
     def __init__(self, name="", health=0, mana=0):
         self.name = name
         self.health = health
+        self.before_change_health = health
         self.mana = mana
         self.max_mana = mana
         self.maximal_mana = 10
         self.shield = 0
+        self.shield_before_change = 0
         self.effects = []
         self.defense = 0
         self.attack = 0

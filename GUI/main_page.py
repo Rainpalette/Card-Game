@@ -33,9 +33,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Card Game")
-        self.resize(1200,800)
+        self.resize(1310,850)
         self.center()
-        # self.bg_images=["hall.jpg"]
+        # self.bg_images=["4k Wallpaper For Your Phone, Desktop Tablet _ (1).jpg"]
         # self.setStyleSheet(f"""
         #     QMainWindow {{
         #         background-image: url({self.bg_images[0]});
@@ -44,6 +44,14 @@ class MainWindow(QMainWindow):
         #         background-size: cover;
         #     }}
         # """)
+        self.bg_label = QLabel(self)
+        self.bg_label.setScaledContents(True)  # 自动缩放图片
+        self.bg_label.setPixmap(QPixmap(""))
+        # self.bg_label.setPixmap(QPixmap("4k Wallpaper For Your Phone, Desktop Tablet _ (1).jpg"))
+        # self.bg_label.setPixmap(QPixmap("background.jpg"))
+        # self.bg_label.setPixmap(QPixmap("Beautiful and Aesthetic Desktop Wallpapers.jpg"))
+        # self.bg_label.setPixmap(QPixmap("forest game scene.jpg"))
+        self.bg_label.resize(self.size())
         
         self.page_list=[]
         self.battle_backend = BattleStage()
@@ -80,7 +88,7 @@ class MainWindow(QMainWindow):
         self.compendium_page = CompendiumPage()
         self.choose_card_deck = ChooseDeckPage()
         self.card_deck_setup = CardDeckInformation(self.create_deck)
-
+        
         self.stacked_widget = QStackedWidget()
 
 
@@ -232,6 +240,10 @@ class MainWindow(QMainWindow):
         pygame.mixer.music.load(r"C:\Users\User\Downloads\CardGame\The Forgotten Girl.mp3")
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.5)
+
+    def resizeEvent(self, event):
+        self.bg_label.resize(self.size())
+        super().resizeEvent(event)
 
     def back_to_battle_stage(self,index):
         self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.battle_page))
@@ -446,18 +458,27 @@ class MainWindow(QMainWindow):
         self.stacked_widget.setCurrentIndex(index)
     
     def game_start(self):
+        
+        self.battle_page.enemy_damage_label.hide()
+        self.battle_page.player_damage_label.hide()
         self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.battle_page))
         self.battle_backend.start_battle("crown")
         self.battle_page.reset_button()
         self.battle_backend.player = self.battle_backend.player_copy
         self.battle_page.battle = self.battle_backend.battle
         self.enemy_page.battle = self.battle_backend.battle
+        for card in self.show_card_page.card_gallery:
+            card.cooldown_end()
         self.battle_page.update_status(self.deck.current_deck,self.show_card_page)
         print(f"Boss is {self.battle_backend.mob.health}")
         print(f"Player health {self.battle_backend.player.health}")
         self.battle = self.battle_backend.battle
         for card in self.deck.current_deck:
             card.current_cooldown =0
+        self.battle.mob.before_change_health = self.battle.mob.health
+        self.battle.player.before_change_health = self.battle.player.health
+        print(f"Mob health before: {self.battle.mob.before_change_health}, after: {self.battle.mob.health}")
+        print(f"Player health before: {self.battle.player.before_change_health}, after: {self.battle.player.health}")
         pygame.mixer.music.stop()
         pygame.mixer.music.load(r"C:\Users\User\Downloads\CardGame\フリーBGM鏡の国のアリス症候群ダークメルヘン戦闘ゴシックかっこいい疾走感.mp3")
         pygame.mixer.music.play(-1)
@@ -496,22 +517,38 @@ class MainWindow(QMainWindow):
             print("no mana")
             return
         self.change_page(self.stacked_widget.indexOf(self.battle_page))
+        current_health = self.battle.mob.before_change_health
         self.battle_backend.play_card(card)
         self.battle_page.Player_use_skill(card.name)
+        self.battle_page.show_damage_on_player(self.battle_backend.calculate_damage(self.battle.player.before_change_health, self.battle.player.health))
+        self.battle_page.show_damage_on_enemy(self.battle_backend.calculate_damage(current_health, self.battle.mob.health))
+        # self.battle.mob.before_change_health = self.battle.mob.health
+        # # self.battle.mob.before_change_health = self.battle.mob.health
+        # self.battle.player.before_change_health = self.battle.player.health
+        print(f"Mob heal before: {self.battle.mob.before_change_health}, after: {self.battle.mob.health}")
         self.battle_page.update_status(self.deck.current_deck,self.show_card_page)
         self.enemy_page.update_effect_status()
+        self.battle.mob.shield_before_change = self.battle.mob.shield
         print(self.battle.mob.get_effects())
-        self.show_card_page.card_gallery[index-1].in_cooldown()
+        current_card = self.show_card_page.card_gallery[index-1]
+        for card in self.deck.current_deck:
+            print(f"Checking card: {card.name} against {current_card.name}")
+            if card.name == current_card.name:
+                print(f"Setting cooldown for card: {card.name} to {card.cooldown}")
+                current_card.in_cooldown(card.cooldown)
+                # current_card.update_cooldown_display(card.cooldown, card.current_cooldown)
+                break
         #card.in_cooldown()
         if self.battle.mob.health<=0:
-            
+            QTimer.singleShot(1800, lambda:self.battle_page.enemy_damage_label.hide())
+            QTimer.singleShot(1800, lambda:self.battle_page.player_damage_label.hide())
             QTimer.singleShot(2000,lambda:self.battle_page.clear_skill_label())
             QTimer.singleShot(2000,lambda:self.win())
             
         else:
             QTimer.singleShot(2000, lambda:self.battle_page.clear_skill_label())
-        
-        
+            QTimer.singleShot(1800, lambda:self.battle_page.enemy_damage_label.hide())
+            QTimer.singleShot(1800, lambda:self.battle_page.player_damage_label.hide())
     def win(self):
         self.change_page(self.stacked_widget.indexOf(self.central_widget))
         pygame.mixer.music.load(r"C:\Users\User\Downloads\CardGame\The Forgotten Girl.mp3")
@@ -519,6 +556,10 @@ class MainWindow(QMainWindow):
         pygame.mixer.music.set_volume(0.5)    
     def end_turn(self):
             self.battle_backend.end_turn(self.deck.current_deck)
+            for card in self.deck.current_deck:
+                for data in self.show_card_page.card_gallery:
+                    if card.name == data.name and card.current_cooldown>0:
+                        data.update_cooldown_display(card.current_cooldown)
             self.battle_backend.start_turn()
             self.run_boss_turn()
             # while True:
@@ -536,6 +577,8 @@ class MainWindow(QMainWindow):
             self.battle_page.disable_action()
             self.battle_page.boss_use_skill("")
             self.battle.mob.reset_skill()
+            QTimer.singleShot(1500,lambda:self.battle_page.enemy_damage_label.hide())
+            QTimer.singleShot(1500,lambda:self.battle_page.player_damage_label.hide())
             QTimer.singleShot(1500,lambda:self.win())
             
             return
@@ -545,19 +588,33 @@ class MainWindow(QMainWindow):
             self.battle.mob.reset_skill()
             self.battle_page.player_turn()
             self.battle_page.update_status(self.deck.current_deck,self.show_card_page)
-            
+            QTimer.singleShot(1800, lambda:self.battle_page.enemy_damage_label.hide())
+            QTimer.singleShot(1800, lambda:self.battle_page.player_damage_label.hide())
             return
         
         
+        # Store the health before using skill
+        
+        print(f"health before: {self.battle.mob.before_change_health}")
+        # Use the skill
         skill_name = self.battle.mob.use_skill()
         print(f"Boss: {skill_name}")
         print(f"{self.battle.player.health} remaining")
         self.battle_page.boss_use_skill(skill_name)
+        
+        # Calculate and show damage based on health change
+        print(f"damage: {self.battle_backend.calculate_damage(self.battle.mob.before_change_health, self.battle.mob.health)}")
+        self.battle_page.show_damage_on_player(self.battle_backend.calculate_damage(self.battle.player.before_change_health, self.battle.player.health))
+        self.battle_page.show_damage_on_enemy(self.battle_backend.calculate_damage(self.battle.mob.before_change_health, self.battle.mob.health))
+        print(f"Mob heal before: {self.battle.mob.before_change_health}, after: {self.battle.mob.health}")
+        
+        self.battle.mob.shield_before_change = self.battle.mob.shield
         self.battle_page.update_status(self.deck.current_deck,self.show_card_page)
         
-        QTimer.singleShot(2000, lambda:self.run_boss_turn())
-    
-        
+        QTimer.singleShot(2400, lambda:self.run_boss_turn())
+        QTimer.singleShot(1800, lambda:self.battle_page.enemy_damage_label.hide())
+        QTimer.singleShot(1800, lambda:self.battle_page.player_damage_label.hide())
+
 
 
 if __name__ == "__main__":
