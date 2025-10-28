@@ -36,13 +36,13 @@ class ChooseDeckPage(QWidget):
         self.exit_button.setStyleSheet("font-size: 20px;")
         self.exit_button.clicked.connect(self.on_click_exit_deck)
 
-        self.set_current_deck_button = QPushButton("Set Current Deck")
-        self.set_current_deck_button.setFixedSize(150,50)
-        self.set_current_deck_button.setStyleSheet("font-size: 20px;")
-        self.set_current_deck_button.clicked.connect(self.on_click_set_current_deck)
+        # self.set_current_deck_button = QPushButton("Set Current Deck")
+        # self.set_current_deck_button.setFixedSize(150,50)
+        # self.set_current_deck_button.setStyleSheet("font-size: 20px;")
+        # self.set_current_deck_button.clicked.connect(self.on_click_set_current_deck)
         
         self.page_layout.addWidget(self.exit_button,0,0) 
-        self.page_layout.addWidget(self.set_current_deck_button, 0, 3)
+        # self.page_layout.addWidget(self.set_current_deck_button, 0, 3)
         self.button_layout = QGridLayout()
         self.button_layout.setSpacing(30)
         for row in range(3):
@@ -76,9 +76,9 @@ class ChooseDeckPage(QWidget):
         if button:
             button.change_text(new_text)
 
-    def on_click_set_current_deck(self):
-        print("Set Current Deck button clicked")
-        self.search_deck.emit(-1)  # Emit signal to set current deck
+    # def on_click_set_current_deck(self):
+    #     print("Set Current Deck button clicked")
+    #     self.search_deck.emit(-1)  # Emit signal to set current deck
 
 
 class CardDeckInformation(QWidget):

@@ -3,6 +3,7 @@ from Card.CardEffect import *
 
 
 card_effect = CardEffect()
+reduce_defense = defenseReduction()
 class CardSetting(ABC):
     def __init__(self, name="", mana_cost=0, description="", card_type="", rarity="", cooldown=0):
         self.name = name
@@ -112,7 +113,9 @@ class Intimidate(CardSetting):
 
     def use_card(self, battle):
         #battle.mob.defense -=1
-        battle.mob.add_effect(card_effect.Memory(battle))
+        # battle.mob.add_effect(card_effect.Memory(battle))
+        battle.mob.add_effect(defenseReduction())
+        reduce_defense.apply_effect(battle)
 
 
 class CriticalStrike(CardSetting):

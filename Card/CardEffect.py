@@ -119,3 +119,29 @@ class CardEffect:
         current_effect = Effect("Void", description, 0, "WhenHolding", stack)
         current_effect.DurationByStack = True
         return current_effect
+
+
+# def Memory(self,battle):
+#         description = "Reduce attack by 1, reduce defense by 1."
+#         current_effect = Effect("Memory", description, 3, "WhenHolding", 1)
+#         battle.mob.defense -=1
+#         return current_effect
+
+class defenseReduction():
+    def __init__(self):
+        self.name = "defenseReduction"
+        self.description = "Reduce defense by 1."
+        self.duration = 3
+        self.activated_times = 0
+        self.types = ["WhenHolding", "OnTurnStart", "OnTurnEnd", "OnAttack", "OnDamaged", "Passive"]
+        self.type = "WhenHolding"
+        self.stack = 1
+        self.DurationByStack = False
+        self.image_path = "GUI/BattlePage/D.D.jpg"
+        # self.current_duration = self.duration
+    def apply_effect(self, battle):
+        battle.mob.defense -= 1
+        self.activated_times += 1
+
+    def remove_effect(self, battle):
+        battle.mob.defense += 1

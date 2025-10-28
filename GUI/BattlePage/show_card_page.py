@@ -130,6 +130,7 @@ class CardGridWindow(QWidget):
         #self.setWindowTitle("Card Grid Layout")
         self.card_gallery =[]
         grid = QGridLayout(self)
+        self.deck = deck
         exit_button = QPushButton("Back")
         exit_button.setFixedSize(50,50)
         exit_button.clicked.connect(self.on_click_exit_deck)
@@ -139,7 +140,7 @@ class CardGridWindow(QWidget):
         for row in range(3):
             for col in range(4):
                 if card_count<8:
-                    card = Card(deck.get_card_name(card_count), "GUI/BattlePage/Afallen.jpg")
+                    card = Card(self.deck.get_card_name(card_count), "GUI/BattlePage/Afallen.jpg")
                     card.id = card_count+1
                     card.rightClicked.connect(self.on_card_clicked)
                     card.leftClicked.connect(self.use_card)
@@ -168,6 +169,28 @@ class CardGridWindow(QWidget):
     
     def use_card(self, id):
         self.send_id.emit(id)
+    
+    def refresh_card_deck(self):
+        count = 0
+        card_count = 0
+        # self.card_gallery.clear()
+        for card in self.deck.current_deck:
+            self.card_gallery[count].name = card.name
+            self.card_gallery[count].image_path = "GUI/BattlePage/D.D.jpg"
+            self.card_gallery[count].refresh_card()
+            count += 1
+            print(f"Updated card in gallery: {card.name}")
+        #     card_widget = Card(card.name, "GUI/BattlePage/D.D.jpg")
+        #     self.card_gallery.append(card_widget)
+        #     print(f"Added card to gallery: {card.name}")
+        # for card in self.card_gallery:
+        #     # card.card_name.setText(self.deck.get_card_name(count))
+        #     card.card_name.setText(self.card_gallery[count].name)
+        #     print(f"Updated card name: {card.card_name.text()}")
+        #     card.image_path = "GUI/BattlePage/D.D.jpg"
+        #     card.refresh_card()
+        #     print(f"Updated card name: {card.card_name.text()}")
+        #     count += 1
 
 class CardDetailPage(QWidget):
     switch_to_page = pyqtSignal(int)

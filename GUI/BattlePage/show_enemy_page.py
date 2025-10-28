@@ -251,6 +251,8 @@ class EnemyPage(QWidget):
             for effect in self.update_list:
                 self.effect_list[count].effect_title.setText(effect.name)
                 self.effect_list[count].effect_description.setText(effect.description)
+                self.effect_list[count].effect_pixmap = QPixmap(effect.image_path)
+                self.effect_list[count].effect_icon.setPixmap(self.effect_list[count].effect_pixmap)
                 self.effect_list[count].show()
                 count += 1
             if hide_count < len(self.effect_list):

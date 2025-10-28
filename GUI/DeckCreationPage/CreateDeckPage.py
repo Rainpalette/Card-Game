@@ -120,10 +120,13 @@ class CreateDeckPage(QWidget):
     send_card_name = pyqtSignal(str)
     send_showcase_card_name = pyqtSignal(str)
     save_deck = pyqtSignal(dict)
-    set_current_deck = pyqtSignal(int)
+    set_current_deck = pyqtSignal(str)
+    error_message = pyqtSignal(str)
+    switch_to_returnable_page = pyqtSignal(int)
     def __init__(self,deck=DeckStage()):
         super().__init__()
         self.deck = deck
+        self.deck_name = ""
         self.card = Card()
         self.card = CardDetailPage()
         self.page_layout = QGridLayout()
@@ -218,6 +221,7 @@ class CreateDeckPage(QWidget):
         self.set_current_deck_button = QPushButton("Set\nCurrent\nDeck")
         self.set_current_deck_button.setFixedSize(50,60)
         self.set_current_deck_button.setStyleSheet("font-size: 12px;")
+        self.set_current_deck_button.clicked.connect(self.set_as_current_deck)
 
         button_layout.addWidget(self.deck_save_button)
         button_layout.addWidget(self.set_current_deck_button)
@@ -307,7 +311,18 @@ class CreateDeckPage(QWidget):
     
     def refresh_deck_name(self, new_name):
         self.deck_name_label.setText(new_name)
-        
+        self.deck_name = new_name
+
+    def set_as_current_deck(self):
+        if len(self.card_showcase_data_list) < 8 or not any(card["name"] for card in self.card_showcase_data_list):
+            print([card['name'] for card in self.card_showcase_data_list])
+            self.switch_to_returnable_page.emit(10)
+            self.error_message.emit("Deck must have at least 8 cards to be set as current deck.")
+            return
+        self.set_current_deck.emit(self.deck_name)
+        self.switch_to_returnable_page.emit(10)
+        self.error_message.emit("Deck has been set as current deck.")
+
     def refresh_after_delete(self):
         # Remove empty entries at the end of the list
         while self.card_showcase_data_list and self.card_showcase_data_list[-1]["name"] == "":
@@ -356,9 +371,9 @@ class CreateDeckPage(QWidget):
         self.save_deck.emit(data)
         self.current_deck_name = ""
     
-    def set_as_current_deck(self):
-        deck_name = self.current_deck_name 
-        self.set_current_deck.emit(deck_name)
+    # def set_as_current_deck(self):
+    #     deck_name = self.current_deck_name 
+    #     self.set_current_deck.emit(deck_name)
     # def save_deck(self,dictionary,deck_stage):
     #     with open("Data/CardDeckRecord.json", "w", encoding="utf-8") as f:
     #         json.dump(dictionary, f, ensure_ascii=False, indent=4)
@@ -416,10 +431,42 @@ class ConfirmationPage(QWidget):
         # self.deck_stage.add_card(self.card_name)
         self.send_card_name.emit(self.card_name)
 
+class Message_Page(QWidget):
+    switch_to_page = pyqtSignal(int)
+    def __init__(self, message=""):
+        super().__init__()
+        self.message = message
+        self.label = QLabel(self.message)
+        self.label.setStyleSheet("font-size: 30px;")
 
+        self.okButton = QPushButton("OK")
+        self.okButton.setMaximumSize(100,100)
+        self.okButton.clicked.connect(self.on_click_ok)
+
+        buttonLayout = QHBoxLayout()
+        buttonLayout.addWidget(self.okButton)
+
+        messageLayout = QVBoxLayout()
+        messageLayout.addWidget(self.label)
+        messageLayout.addLayout(buttonLayout)
+
+        page_layout = QGridLayout(self)
+        page_layout.addLayout(messageLayout,1,1)
+        page_layout.setRowStretch(0,1)
+        page_layout.setRowStretch(2,1)
+        page_layout.setColumnStretch(0,1)
+        page_layout.setColumnStretch(2,1)
+
+    def on_click_ok(self):
+        self.switch_to_page.emit(8)
     
-        
+    def set_message(self, message):
+        self.message = message
+        self.label.setText(self.message)
 
+    def clear_message(self):
+        self.message = ""
+        self.label.setText(self.message)
 
 
 

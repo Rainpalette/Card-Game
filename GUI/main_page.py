@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QLineEdit
 from BattlePage.main_battle_page import BattleBoard
 from BattlePage.show_card_page import CardGridWindow, CardDetailPage, Card
 from BattlePage.show_enemy_page import EnemyPage
-from DeckCreationPage.CreateDeckPage import CreateDeckPage, ConfirmationPage, CardInDeck
+from DeckCreationPage.CreateDeckPage import Message_Page, CreateDeckPage, ConfirmationPage, CardInDeck
 from CompendiumPage.Compendium import CardInCompendium, CompendiumPage
 from DeckCreationPage.ChooseDeck import ChooseDeckPage, CardDeckInformation
 from Card.CardSetting import *
@@ -75,8 +75,8 @@ class MainWindow(QMainWindow):
         self.central_widget = QWidget(self)
         self.card = Card("","")
         self.card_detail = CardDetailPage("","")
-        
-        
+
+        self.message_page = Message_Page()
         self.battle_page = BattleBoard(self.battle)
         self.show_card_page = CardGridWindow(self.deck)
         self.enemy_page = EnemyPage(self.battle)
@@ -154,6 +154,7 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.compendium_page)#7
         self.stacked_widget.addWidget(self.choose_card_deck)#8
         self.stacked_widget.addWidget(self.card_deck_setup)#9
+        self.stacked_widget.addWidget(self.message_page)#10
         
 
         #left part
@@ -218,8 +219,12 @@ class MainWindow(QMainWindow):
         self.create_deck.send_card_name.connect(self.add_confirmation)
         self.create_deck.send_showcase_card_name.connect(self.delete_showcase_card)
         self.create_deck.save_deck.connect(self.save_card_deck)
+        self.create_deck.set_current_deck.connect(self.set_current_deck)
+        self.create_deck.error_message.connect(self.change_message_page)
+        self.create_deck.switch_to_returnable_page.connect(self.return_previous_page)
         self.create_confirmation.switch_to_page.connect(self.change_page)
         self.create_confirmation.send_card_name.connect(self.set_showcase_card)
+        
         #self.compendium_card.leftClicked
         self.compendium_page.send_name.connect(self.set_compendium_card)
         self.compendium_page.switch_to_page.connect(self.change_page)
@@ -228,6 +233,7 @@ class MainWindow(QMainWindow):
         self.choose_card_deck.switch_to_page.connect(self.change_page)
         self.card_deck_setup.switch_to_page.connect(self.change_page)
         self.card_deck_setup.send_deck_name.connect(self.save_deck_name)
+        self.message_page.switch_to_page.connect(self.return_previous_page)
 
 
 
@@ -244,6 +250,17 @@ class MainWindow(QMainWindow):
     def resizeEvent(self, event):
         self.bg_label.resize(self.size())
         super().resizeEvent(event)
+    
+    def set_current_deck(self,deck_name):
+        print(f"Setting current deck to: {deck_name}")
+        print(f"Available decks: {[deck['deck_name'] for deck in self.deck.deck_list]}")
+        for deck in self.deck.deck_list:
+            if deck['deck_name'] == deck_name:
+                print(f"Deck found: {deck['deck_name']}")
+                self.deck.current_deck = deck['cards']
+                self.show_card_page.deck = self.deck
+                self.show_card_page.refresh_card_deck()
+                break
 
     def back_to_battle_stage(self,index):
         self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.battle_page))
@@ -458,7 +475,7 @@ class MainWindow(QMainWindow):
         self.stacked_widget.setCurrentIndex(index)
     
     def game_start(self):
-        
+        self.show_card_page.refresh_card_deck()
         self.battle_page.enemy_damage_label.hide()
         self.battle_page.player_damage_label.hide()
         self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.battle_page))
@@ -497,6 +514,7 @@ class MainWindow(QMainWindow):
         return True
     
     def return_previous_page(self,index):
+        print(f"Page list before: {self.page_list}")
         if not self.page_list:
             self.page_list.append(self.stacked_widget.currentIndex())
             self.stacked_widget.setCurrentIndex(index)
@@ -615,7 +633,11 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(1800, lambda:self.battle_page.enemy_damage_label.hide())
         QTimer.singleShot(1800, lambda:self.battle_page.player_damage_label.hide())
 
-
+    def closeEvent(self, event):
+        pygame.mixer.music.stop()
+        event.accept()
+    def change_message_page(self,message):
+        self.message_page.set_message(message)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)   

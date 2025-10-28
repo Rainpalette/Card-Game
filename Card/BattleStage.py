@@ -87,6 +87,7 @@ class BattleStage:
             effect.duration -= 1
             if effect.duration <= 0:
                 self.player.remove_effect(effect)
+                effect.remove_effect(self.battle)
 
         for effect in self.mob.get_effects():
             if effect.type == "OnTurnEnd":
@@ -100,6 +101,7 @@ class BattleStage:
             effect.duration -= 1
             if effect.duration <= 0:
                 self.mob.remove_effect(effect)
+                effect.remove_effect(self.battle)
 
     def start_turn(self):
         self.player.mana = self.player.max_mana
