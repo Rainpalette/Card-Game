@@ -5,7 +5,7 @@ from Card.CardEffect import *
 card_effect = CardEffect()
 reduce_defense = defenseReduction()
 class CardSetting(ABC):
-    def __init__(self, name="", mana_cost=0, description="", card_type="", rarity="", cooldown=0):
+    def __init__(self, name="", mana_cost=0, description="", card_type="", rarity="", cooldown=0, image_path="GUI/Afallen.jpg"):
         self.name = name
         self.mana_cost = mana_cost
         self.description = description
@@ -14,6 +14,7 @@ class CardSetting(ABC):
         # self.card_effect = card_effect
         self.cooldown = cooldown
         self.current_cooldown = 0
+        self.image_path = image_path
 
     @abstractmethod
     def use_card(self, battle):
@@ -31,7 +32,8 @@ class NormalAttack(CardSetting):
             description="Deal 5 damage to the enemy.",
             card_type="Attack",
             rarity="Common",
-            cooldown=3
+            cooldown=3,
+            image_path="Card/CardIcon/Sword.png"
         )
 
     def use_card(self, battle):

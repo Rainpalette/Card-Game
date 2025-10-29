@@ -7,6 +7,8 @@ class DeckStage:
         self.deck = []
         self.deck_list=[]
         self.current_deck = []
+        self.current_deck_name = ""
+        self.in_use_deck_name = "Default deck"
         self.latest_deck_name = ""
 
     # def add_card(self, card):
@@ -50,6 +52,10 @@ class DeckStage:
     def get_card_name(self,index):
         name = self.current_deck[index].name
         return name
+    
+    def get_card_image(self,index):
+        image_path = self.current_deck[index].image_path
+        return image_path
 
     def get_card_detail(self,index):
         description = self.current_deck[index].description

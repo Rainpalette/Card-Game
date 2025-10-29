@@ -392,7 +392,7 @@ class ConfirmationPage(QWidget):
         super().__init__()
         self.deck_stage = deck
         self.card_name = ""
-        self.label = QLabel(f"Are you sure to add {self.card_name} into the default card deck?")
+        self.label = QLabel(f"Are you sure to add {self.card_name} into {self.deck_stage.current_deck_name} deck?")
         self.label.setStyleSheet("font-size: 30px;")
 
         self.yesButton = QPushButton("Yes")
@@ -430,6 +430,10 @@ class ConfirmationPage(QWidget):
     def on_click_yes(self):
         # self.deck_stage.add_card(self.card_name)
         self.send_card_name.emit(self.card_name)
+    
+    def refresh_label(self, card_name):
+        self.card_name = card_name
+        self.label.setText(f"Are you sure to add {self.card_name} into {self.deck_stage.current_deck_name} deck?")
 
 class Message_Page(QWidget):
     switch_to_page = pyqtSignal(int)

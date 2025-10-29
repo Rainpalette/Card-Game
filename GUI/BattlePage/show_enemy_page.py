@@ -87,16 +87,17 @@ class EnemyPage(QWidget):
         self.boss_detail = QLabel()
         pixmap = QPixmap(crown['image'])
         self.boss_detail.setPixmap(pixmap)
-        self.boss_detail.setFixedSize(300,300)
+        self.boss_detail.setFixedSize(200,250)
+        self.boss_detail.setScaledContents(True)  # This will make the image scale to fit the label
         self.effect_list = []
         self.update_list = []
         self.boss_name = QLabel()
         self.boss_name.setText(crown['name'])
-        self.boss_name.setStyleSheet("font-size: 30px;")
+        self.boss_name.setStyleSheet("font-size: 30px;background-color:black; color:white; padding:5px; border-radius:10px;")
 
         self.boss_showcase_layout=QVBoxLayout()
-        self.boss_showcase_layout.addWidget(self.boss_detail)
-        self.boss_showcase_layout.addWidget(self.boss_name)
+        self.boss_showcase_layout.addWidget(self.boss_detail, alignment=Qt.AlignCenter)
+        self.boss_showcase_layout.addWidget(self.boss_name, alignment=Qt.AlignCenter)
 
         self.description = QLabel("Description")
         # with open("GUI/BattlePage/radiel_description.txt", "r", encoding="utf-8") as f:

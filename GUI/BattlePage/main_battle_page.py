@@ -71,15 +71,52 @@ class BattleBoard(QWidget):
 
         enemy_layout = QVBoxLayout()
         #self.enemy_health_bar = Healbar()
-        self.enemy_health_bar = QLabel()
-        self.enemy_health_bar.setText(f"{self.battle.mob.health} ({self.battle.mob.shield}) mana:{self.battle.mob.mana}")
-        self.enemy_health_bar.setStyleSheet("font-size: 25px;")
+        # self.enemy_health_bar = QLabel()
+        # self.enemy_health_bar.setText(f"{self.battle.mob.health} ({self.battle.mob.shield}) mana:{self.battle.mob.mana}")
+        # self.enemy_health_bar.setStyleSheet("""font-size: 25px;
+        #                                     color: #c6c6e8""")
+        
         # Create enemy image button
         self.enemy_image = QPushButton()
-        self.enemy_icon = QIcon("GUI/BattlePage/Afallen.jpg")
-        self.enemy_image.setFixedSize(200, 200)  
+        self.enemy_icon = QIcon("Clown.png")
+        self.enemy_image.setFixedSize(200, 200)
+
+        # Make button background transparent
+        self.enemy_image.setStyleSheet("""
+                QPushButton {
+                    background-color: #b3bfcb;
+                    border: 3px solid #313c45;
+                    border-radius: 5px;
+                    font-size: 70px;
+                }
+                QPushButton:hover {
+                    border: 3px solid #3d4a54;
+                    background-color: #c0cbd5;
+                }
+                QLabel {
+                        font-size: 70px;
+                        color: #FF4444;
+                    }
+                """)
         self.enemy_image.setIcon(self.enemy_icon)
-        
+        self.enemy_health_bar = QLabel(self.enemy_image)
+        self.enemy_health_bar.move(160,-10)
+        self.enemy_health_bar.setFixedSize(50,50)
+        self.enemy_health_bar.setText(f"{self.battle.mob.health}")
+        self.enemy_health_bar.setStyleSheet("""font-size: 40px;
+                                             background-color: transparent;
+                                             font-weight: bold;
+                                             color: #344979;
+                                            """)
+        self.enemy_shield_bar = QLabel(self.enemy_image)
+        self.enemy_shield_bar.move(0,-10)
+        self.enemy_shield_bar.setFixedSize(50,50)
+        self.enemy_shield_bar.setText(f"{self.battle.mob.shield}")
+        self.enemy_shield_bar.setStyleSheet("""font-size: 40px;
+                                             background-color: transparent;
+                                             font-weight: bold;
+                                             color: #344979;
+                                            """)
         # Create damage label that will overlay the image
         self.enemy_damage_label = QLabel("5", self.enemy_image)  # Make it a child of enemy_image
         self.enemy_damage_label.setStyleSheet("""
@@ -94,7 +131,9 @@ class BattleBoard(QWidget):
         self.enemy_damage_label.hide()
 
         self.enemy_name = QLabel(self.battle.mob.name)
+        self.enemy_name.setStyleSheet("font-size: 30px; font-weight: bold;")
         self.enemy_skill_name = QLabel()
+        self.enemy_skill_name.setStyleSheet("font-size: 30px; font-weight: bold;")
         # dynamic_enemy_layout.addWidget(self.enemy_image, alignment=Qt.AlignCenter)
         # dynamic_enemy_layout.addWidget(self.enemy_damage_label, alignment=Qt.AlignLeft)
         self.enemy_image.clicked.connect(self.on_click_enemy_profile)
@@ -103,7 +142,8 @@ class BattleBoard(QWidget):
         # self.enemy_damage_label = QLabel("0")
         # self.enemy_damage_label.hide()
         # self.enemy_damage_label.setStyleSheet("font-size: 20px;")
-        enemy_layout.addWidget(self.enemy_health_bar, alignment=Qt.AlignCenter)
+
+        # enemy_layout.addWidget(self.enemy_health_bar, alignment=Qt.AlignCenter)
         # enemy_layout.addLayout(dynamic_enemy_layout, Qt.AlignCenter)
         enemy_layout.addWidget(self.enemy_image, alignment=Qt.AlignCenter)
         enemy_layout.addWidget(self.enemy_name, alignment=Qt.AlignCenter)
@@ -119,19 +159,40 @@ class BattleBoard(QWidget):
         # self.main_layout.addLayout(dynamic_enemy_layout, 0, 1)
         self.main_layout.addLayout(enemy_layout, 0, 1)
         #game_detial_layout = QVBoxLayout()
-        round_label = QLabel("Round 1")
+        self.round_label = QLabel("Round 1")
+        self.round_label.setStyleSheet("font-size: 30px; font-weight: bold;color:#778ca4;")
 
-        
-        self.main_layout.addWidget(round_label, 1, 0, alignment=Qt.AlignCenter)
+        self.enemy_mana_bar = QLabel()
+        self.enemy_mana_bar.setText(f"Mana remaining:\n             {self.battle.mob.mana}")
+        self.enemy_mana_bar.setStyleSheet("font-size: 30px;font-weight: bold;color:#c6c6e8;")
+        self.main_layout.addWidget(self.round_label, 1, 0, alignment=Qt.AlignCenter)
+        self.main_layout.addWidget(self.enemy_mana_bar,0,2,alignment=Qt.AlignCenter)
         #self.player_mana_bar = Manabar()
         self.player_mana_bar = QLabel()
-        self.player_mana_bar.setText(str(self.battle.player.mana))
+        self.player_mana_bar.setText(f"Mana remaining:\n             {self.battle.player.mana}")
+        self.player_mana_bar.setStyleSheet("font-size: 25px;")
         self.main_layout.addWidget(self.player_mana_bar,2,0,alignment=Qt.AlignCenter)
         
         player_layout = QVBoxLayout()
         self.player_image = QPushButton()  # Made this a class attribute so we can reference it
         self.player_image.setFixedSize(200,200)
-        player_icon = QIcon("GUI/BattlePage/D.D.jpg")
+        # Make button background transparent
+        self.player_image.setStyleSheet("""
+            QPushButton {
+                background-color: #b3bfcb;
+                border: 3px solid #313c45;
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                border: 3px solid #3d4a54;
+                background-color: #c0cbd5;
+            }
+            QLabel {
+                font-size: 70px;
+                color: #FF4444;
+            }
+        """)
+        player_icon = QIcon("Player_Metris.png")
         self.player_image.setIcon(player_icon)
         self.player_image.setIconSize(QSize(200,200))
         
@@ -148,16 +209,49 @@ class BattleBoard(QWidget):
         self.player_damage_label.move(80,80)  # Same position as enemy damage label
         self.player_damage_label.hide()
 
-        self.player_health_bar = QLabel(f"{self.battle.player.health} ({self.battle.player.shield})")
+        # self.player_health_bar = QLabel(f"{self.battle.player.health} ({self.battle.player.shield})")
+        self.player_health_bar = QLabel(self.player_image)
+        self.player_health_bar.move(160,-10)
+        self.player_health_bar.setText(f"{self.battle.player.health}")
+        self.player_health_bar.setStyleSheet("""font-size: 40px;
+                                             background-color: transparent;
+                                             font-weight: bold;
+                                             color: #344979;
+                                            """)
+        self.player_shield_bar = QLabel(self.player_image)
+        self.player_shield_bar.move(0,-10)
+        self.player_shield_bar.setText(f"{self.battle.player.shield}")
+        self.player_shield_bar.setStyleSheet("""font-size: 40px;
+                                             background-color: transparent;
+                                             font-weight: bold;
+                                             color: #344979;
+                                            """)
+
+
         self.player_skill_name = QLabel()
+        self.player_skill_name.setStyleSheet("font-size: 30px; font-weight: bold;")
         player_layout.addWidget(self.player_skill_name, alignment=Qt.AlignCenter)
         player_layout.addWidget(self.player_image, alignment=Qt.AlignCenter)  # Updated to use self.player_image
-        player_layout.addWidget(self.player_health_bar, alignment=Qt.AlignCenter)
+        # player_layout.addWidget(self.player_health_bar, alignment=Qt.Align)
         self.main_layout.addLayout(player_layout, 2, 1)
 
         #Add card deck into the widget
-        self.player_card_deck = QPushButton("Card deck")
-        self.player_card_deck.setFixedSize(100,150)
+        self.player_card_deck = QPushButton()  # Remove text and background image
+        self.player_card_deck.setFixedSize(120,150)
+        card_icon = QIcon("Card_icon.jpg")
+        self.player_card_deck.setIcon(card_icon)
+        self.player_card_deck.setIconSize(QSize(110, 140))  # Slightly smaller than button size
+        self.player_card_deck.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                border: 3px solid #313c45;
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                border: 3px solid #3d4a54;
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+        """)
         self.player_card_deck.clicked.connect(self.on_click_card_deck)
         
         self.main_layout.addWidget(self.player_card_deck,2,2,alignment=Qt.AlignTop)
@@ -192,16 +286,21 @@ class BattleBoard(QWidget):
 
     def update_status(self,deck,page):
         self.enemy_name.setText(self.battle.mob.name)
-        self.player_mana_bar.setText(str(self.battle.player.mana))
-        self.enemy_health_bar.setText(f"{self.battle.mob.health} ({self.battle.mob.shield}) mana:{self.battle.mob.mana}")
-        self.player_health_bar.setText(f"{self.battle.player.health} ({self.battle.player.shield})")
+        self.player_mana_bar.setText(f"Mana remaining:\n             {self.battle.player.mana}")
+        self.player_mana_bar.setStyleSheet("color:#778CA4;font-weight: bold;font-size: 30px;")
+        self.enemy_health_bar.setText(f"{self.battle.mob.health}")
+        self.enemy_shield_bar.setText(f"{self.battle.mob.shield}")
+        self.enemy_mana_bar.setText(f"Mana remaining:\n             {self.battle.mob.mana}")
+        self.player_health_bar.setText(f"{self.battle.player.health}")
+        self.player_shield_bar.setText(f"{self.battle.player.shield}")
         count =0
         for card in deck:
             if card.current_cooldown <=0:
                 page.card_gallery[count].cooldown_end()
             count+=1
-
-                
+    
+    def update_round(self, round_number):
+        self.round_label.setText(f"Round {round_number}")
 
     def on_click_enemy_profile(self):
         self.show_enemy_profile = True

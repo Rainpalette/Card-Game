@@ -46,13 +46,14 @@ class MainWindow(QMainWindow):
         # """)
         self.bg_label = QLabel(self)
         self.bg_label.setScaledContents(True)  # 自动缩放图片
-        self.bg_label.setPixmap(QPixmap(""))
+        self.bg_label.setPixmap(QPixmap("hall.jpg"))
         # self.bg_label.setPixmap(QPixmap("4k Wallpaper For Your Phone, Desktop Tablet _ (1).jpg"))
         # self.bg_label.setPixmap(QPixmap("background.jpg"))
         # self.bg_label.setPixmap(QPixmap("Beautiful and Aesthetic Desktop Wallpapers.jpg"))
         # self.bg_label.setPixmap(QPixmap("forest game scene.jpg"))
         self.bg_label.resize(self.size())
-        
+        self.icon = QIcon("Afallen.jpg")
+        self.setWindowIcon(self.icon)
         self.page_list=[]
         self.battle_backend = BattleStage()
         self.battle = self.battle_backend.battle
@@ -86,7 +87,7 @@ class MainWindow(QMainWindow):
         self.card_in_deck = CardInDeck()
         self.compendium_card = CardInCompendium()
         self.compendium_page = CompendiumPage()
-        self.choose_card_deck = ChooseDeckPage()
+        self.choose_card_deck = ChooseDeckPage(self.deck)
         self.card_deck_setup = CardDeckInformation(self.create_deck)
         
         self.stacked_widget = QStackedWidget()
@@ -258,16 +259,22 @@ class MainWindow(QMainWindow):
             if deck['deck_name'] == deck_name:
                 print(f"Deck found: {deck['deck_name']}")
                 self.deck.current_deck = deck['cards']
+                # self.deck.current_deck_name = deck_name
+                self.deck.in_use_deck_name = deck_name
+                # print(f"Current deck set to: {self.deck.current_deck}")
                 self.show_card_page.deck = self.deck
                 self.show_card_page.refresh_card_deck()
+                self.choose_card_deck.refresh_current_deck_label()
                 break
 
     def back_to_battle_stage(self,index):
         self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.battle_page))
     
     def add_confirmation(self,name):
-        self.create_confirmation.label.setText(f"Are you sure to add {name} into the default card deck?")
-        self.create_confirmation.card_name = name
+        self.create_confirmation.deck_stage = self.deck
+        self.create_confirmation.refresh_label(name)
+        # self.create_confirmation.label.setText(f"Are you sure to add {name} into the default card deck?")
+        # self.create_confirmation.card_name = name
 
     #load deck after you clicked on the deck button
     def load_selected_deck(self,deck_id):
@@ -291,6 +298,7 @@ class MainWindow(QMainWindow):
         #self.deck.set_deck(deck_id)
         self.create_deck.refresh_page()
         self.create_deck.refresh_deck_name(self.deck.deck_list[deck_id]['deck_name'])
+        self.deck.current_deck_name = self.deck.deck_list[deck_id]['deck_name']
         print(f"Loaded deck {deck_id}: {self.deck.current_deck}")
         self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.create_deck))
     
@@ -579,6 +587,7 @@ class MainWindow(QMainWindow):
                     if card.name == data.name and card.current_cooldown>0:
                         data.update_cooldown_display(card.current_cooldown)
             self.battle_backend.start_turn()
+            
             self.run_boss_turn()
             # while True:
             #     if self.battle.mob.mana<=0:
@@ -605,6 +614,7 @@ class MainWindow(QMainWindow):
             self.battle_page.boss_use_skill("")
             self.battle.mob.reset_skill()
             self.battle_page.player_turn()
+            self.battle_page.update_round(self.battle_backend.game.turn)
             self.battle_page.update_status(self.deck.current_deck,self.show_card_page)
             QTimer.singleShot(1800, lambda:self.battle_page.enemy_damage_label.hide())
             QTimer.singleShot(1800, lambda:self.battle_page.player_damage_label.hide())

@@ -3,7 +3,10 @@ from PyQt5.QtGui import QPixmap, QTransform, QIcon
 from PyQt5.QtCore import Qt, QSize, pyqtSignal
 from functools import partial
 import json
-
+# import sys
+# import os
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"../..")))
+# from GUI.DeckCreationPage.CreateDeckPage import *
 
 class Card(QWidget):
     leftClicked = pyqtSignal(int)
@@ -38,23 +41,34 @@ class Card(QWidget):
         
         layout.addWidget(self.card_name)
         layout.addWidget(self.card_image)
+        
         self.card.setStyleSheet("""
             QWidget{
                 border-radius: 8px;
-                border: 2px solid #8b5a2b;
+                border: 2px solid #000000;
                                 }""")
         self.card.setLayout(layout)
         
         card_layout = QVBoxLayout(self)
         card_layout.addWidget(self.card)
-        
+        # background-color: #caa472;
+        # self.setStyleSheet("""
+        #     QWidget {
+        #         background-color: #caa472;
+                
+        #     }
+        #     QWidget:hover {
+        #         background-color: #d4b483;
+                
+        #     }
+        # """)
         self.setStyleSheet("""
             QWidget {
-                background-color: #caa472;
+                background-color: #b3bfcb;
                 
             }
             QWidget:hover {
-                background-color: #d4b483;
+                background-color: #d5dbe2;
                 
             }
         """)
@@ -63,7 +77,7 @@ class Card(QWidget):
         self.card_cooldown_reminder.setStyleSheet("""
             QLabel {
                 font-size: 70px;
-                color: black;
+                color: #E0C58F;
                 background-color: transparent;
             }
         """)
@@ -140,7 +154,7 @@ class CardGridWindow(QWidget):
         for row in range(3):
             for col in range(4):
                 if card_count<8:
-                    card = Card(self.deck.get_card_name(card_count), "GUI/BattlePage/Afallen.jpg")
+                    card = Card(self.deck.get_card_name(card_count), self.deck.get_card_image(card_count))
                     card.id = card_count+1
                     card.rightClicked.connect(self.on_card_clicked)
                     card.leftClicked.connect(self.use_card)
@@ -176,7 +190,7 @@ class CardGridWindow(QWidget):
         # self.card_gallery.clear()
         for card in self.deck.current_deck:
             self.card_gallery[count].name = card.name
-            self.card_gallery[count].image_path = "GUI/BattlePage/D.D.jpg"
+            self.card_gallery[count].image_path = card.image_path
             self.card_gallery[count].refresh_card()
             count += 1
             print(f"Updated card in gallery: {card.name}")

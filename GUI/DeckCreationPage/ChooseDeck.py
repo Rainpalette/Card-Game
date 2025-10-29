@@ -28,15 +28,19 @@ class DeckButton(QPushButton):
 class ChooseDeckPage(QWidget):
     switch_to_page = pyqtSignal(int)
     search_deck = pyqtSignal(int)
-    def __init__(self):
+    def __init__(self, deck_stage):
         super().__init__()
+        self.deck = deck_stage
         self.page_layout = QGridLayout(self)
         self.exit_button= QPushButton("Back")
         self.exit_button.setFixedSize(50,50)
         self.exit_button.setStyleSheet("font-size: 20px;")
         self.exit_button.clicked.connect(self.on_click_exit_deck)
 
-        # self.set_current_deck_button = QPushButton("Set Current Deck")
+        self.set_current_deck_label = QLabel(f"Current Deck:\n{self.deck.in_use_deck_name}")
+        self.set_current_deck_label.setStyleSheet("font-size: 18px; font-weight: bold;")
+        self.page_layout.addWidget(self.set_current_deck_label, 0, 3)
+
         # self.set_current_deck_button.setFixedSize(150,50)
         # self.set_current_deck_button.setStyleSheet("font-size: 20px;")
         # self.set_current_deck_button.clicked.connect(self.on_click_set_current_deck)
@@ -51,7 +55,7 @@ class ChooseDeckPage(QWidget):
                 card.deck_id = row*3+col
                 print(f"Creating button for deck ID: {card.deck_id}")
                 self.button_layout.addWidget(card, row+1, col+1)
-                card.deck_clicked.connect(self.on_click_create_deck)  # Connect to our custom signal
+                card.deck_clicked.connect(self.on_click_create_deck)  
         self.page_layout.addLayout(self.button_layout, 2, 2)
 
         self.page_layout.setColumnStretch(0, 1)
@@ -68,7 +72,7 @@ class ChooseDeckPage(QWidget):
         self.switch_to_page.emit(0)
 
     def on_click_create_deck(self, deck_id):
-        print(f"Deck clicked: {deck_id}")  # Add debug print
+        print(f"Deck clicked: {deck_id}") 
         self.search_deck.emit(deck_id)
     
     def change_button_text(self, deck_id, new_text):
@@ -76,6 +80,10 @@ class ChooseDeckPage(QWidget):
         if button:
             button.change_text(new_text)
 
+    def refresh_current_deck_label(self):
+        print("Refreshing current deck label")
+        print(f"Current deck name: {self.deck.current_deck_name}")
+        self.set_current_deck_label.setText(f"Current Deck:\n{self.deck.current_deck_name}")
     # def on_click_set_current_deck(self):
     #     print("Set Current Deck button clicked")
     #     self.search_deck.emit(-1)  # Emit signal to set current deck

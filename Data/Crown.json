@@ -3,7 +3,7 @@
         "name": "Crown",
         "description": "In that foreign, uncharted land, he was the first human you encountered — yet, alas, no goodwill dwelled in his heart. \nA mask of twisted mirth clings to his face, its hollow eyes locking upon yours as he advances, slow and unrelenting. The air thickens with a silent hostility, like a storm yet to break.\n His purpose remains veiled, his intent unreadable. But you know this much — such a being is not one to inspire fear. You draw your weapon, steel whispering against the wind, and meet his gaze without flinching.\n Yet beware — beneath that painted smile may lurk something far more ancient, far more dreadful than mere malice.\n\n The crown is skilled at increasing his maximum mana, allowing him to launch multiple attacks within a single turn. Defeat him as quickly as possible—and remember, “trick” has always been humanity's greatest trump card.",
         "effects": [],
-        "image": "GUI/BattlePage/Afallen.jpg",
+        "image": "Clown.png",
         "skills": [
             {
                 "name": "attack",
