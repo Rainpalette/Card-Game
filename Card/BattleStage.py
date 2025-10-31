@@ -77,10 +77,12 @@ class BattleStage:
 
         for effect in self.player.get_effects():
             if effect.type == "OnTurnEnd":
-                self.card_effect.apply_effect(effect, effect.stack)
+                print("Applying player end turn effect:", effect.name)
+                effect.apply_effect(self.battle)
                 if effect.DurationByStack:
                     effect.stack -= 1
-                    effect.duration = effect.stack
+                    print(f"Effect {effect.name} stack decreased to {effect.stack}")
+                    # effect.duration = effect.stack
                     if effect.stack <= 0:
                         self.player.remove_effect(effect)
                         continue
@@ -91,10 +93,10 @@ class BattleStage:
 
         for effect in self.mob.get_effects():
             if effect.type == "OnTurnEnd":
-                self.card_effect.apply_effect(effect, effect.stack)
+                effect.apply_effect(self.battle)
                 if effect.DurationByStack:
                     effect.stack -= 1
-                    effect.duration = effect.stack
+                    # effect.duration = effect.stack
                     if effect.stack <= 0:
                         self.mob.remove_effect(effect)
                         continue
@@ -102,6 +104,16 @@ class BattleStage:
             if effect.duration <= 0:
                 self.mob.remove_effect(effect)
                 effect.remove_effect(self.battle)
+            #Special handling for Mist effect
+            if effect.name == "Mist" and effect.activate_fixed_duration:
+                effect.fixed_duration -= 1
+                if effect.fixed_duration <= 0:
+                    effect.turn_down_mist()
+                    effect.activate_fixed_duration = False
+            # if effect.name == "Mist" and (effect.activate_midnight):
+            #     effect.apply_midnight(self.battle)
+            #     effect.activate_midnight = False
+
 
     def start_turn(self):
         self.player.mana = self.player.max_mana
@@ -135,11 +147,16 @@ class BattleStage:
     def check_card_cooldown(self, card):
         return card.current_cooldown < 0
 
-    def play_card(self, card):
-        self.player.mana -= card.mana_cost
+    def play_card(self, card, additional_attack=False):
+        if additional_attack:
+            card.additional_action(self.battle)
+            return
         card.use_card(self.battle)
+        self.player.mana -= card.mana_cost
+        
         card.cooldown_card()
-    
+        
+
     def calculate_damage(self, healthBefore, healthAfter):
         base_damage = healthBefore - healthAfter
         return base_damage

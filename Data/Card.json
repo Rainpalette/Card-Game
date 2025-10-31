@@ -7,14 +7,7 @@
             "type": "Attack",
             "rarity": "Common",
             "cooldown": 3,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "deal_damage",
-                        "value": 5
-                    }
-                ]
-            },
+            "image_path": "Card/CardIcon/Sword.png",
             "backstory": "Simple and direct brute force—perfect for dealing with mindless foes."
         },
         {
@@ -24,14 +17,7 @@
             "type": "Heal",
             "rarity": "Common",
             "cooldown": 2,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "heal",
-                        "value": 3
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "Just a minor wound—nothing worth worrying about."
         },
         {
@@ -41,14 +27,7 @@
             "type": "Defense",
             "rarity": "Common",
             "cooldown": 2,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "shield",
-                        "value": 3
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "Defense can be a form of attack—after all, battle favors the one who waits for a crack to appear."
         },
         {
@@ -58,18 +37,7 @@
             "type": "Defense",
             "rarity": "Common",
             "cooldown": 4,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "shield",
-                        "value": 3
-                    },
-                    {
-                        "type": "deal_damage",
-                        "value": 6
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "I took your blow—now it’s your turn!"
         },
         {
@@ -79,18 +47,7 @@
             "type": "Effect",
             "rarity": "Common",
             "cooldown": 3,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "deal_damage",
-                        "value": 3
-                    },
-                    {
-                        "type": "heal",
-                        "value": 2
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "There are no gods in this world—but faith still lingers."
         },
         {
@@ -100,19 +57,7 @@
             "type": "Effect",
             "rarity": "Common",
             "cooldown": 3,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "reduce_defense",
-                        "value": 1,
-                        "duration": 3
-                    },
-                    {
-                        "type": "add_effect",
-                        "effect": "Memory"
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "Awaken the primal fear within—let instinct drive the coward to flee."
         },
         {
@@ -122,14 +67,7 @@
             "type": "Attack",
             "rarity": "Common",
             "cooldown": 5,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "deal_damage",
-                        "value": 8
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "A mighty swing with crushing power—just make sure you can handle the recoil."
         },
         {
@@ -139,14 +77,7 @@
             "type": "Effect",
             "rarity": "Common",
             "cooldown": 5,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "remove_shield",
-                        "deal_equal_damage": true
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "The difference between us lies here—you’ve already walked into my trap."
         },
         {
@@ -156,24 +87,7 @@
             "type": "Effect",
             "rarity": "Common",
             "cooldown": 8,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "shield",
-                        "value": 8
-                    },
-                    {
-                        "type": "apply_status",
-                        "status": "sleep",
-                        "duration": "until_shield_broken"
-                    },
-                    {
-                        "type": "reduce_cooldown",
-                        "value": 2,
-                        "target": "one_card_each_turn"
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "Wrapped in eternal winter, he has watched generations rise and fall. Time left him untouched, ageless, and unscarred. Staring at the pocket watch in his hand, he wonders what meaning endless life could hold. Perhaps his thoughts and memories have long frozen with the wind—forever sealed in ice."
         },
         {
@@ -183,17 +97,7 @@
             "type": "Effect",
             "rarity": "Common",
             "cooldown": 3,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "add_effect",
-                        "effect": "Memory",
-                        "duration": 3,
-                        "damage_dealt_modifier": -1,
-                        "damage_received_modifier": 1
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "A golden-haired girl dances in the snow, trembling under the biting wind. Yet her movements remain elegant, flowing with the distant melody. From afar, Cheryl watches her—the girl’s grace mirrors someone he once knew. For the first time in ages, his heart stirs again. Clutching his pocket watch, he whispers to himself: this time, he’ll be selfish."
         },
         {
@@ -203,15 +107,7 @@
             "type": "Effect",
             "rarity": "Common",
             "cooldown": 5,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "add_effect",
-                        "effect": "Blessing",
-                        "duration": 2
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "In the land of eternal frost, a single day each year brings warmth. The Winter Festival—small but lively—where people shed their coats and dance barefoot on thawed ground. They call it the gods’ blessing, but he knows better. There are no gods here—only borrowed warmth."
         },
         {
@@ -221,34 +117,7 @@
             "type": "Effect",
             "rarity": "Common",
             "cooldown": 6,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "add_effect",
-                        "effect": "Iron Blood",
-                        "duration": 3
-                    },
-                    {
-                        "type": "transform_cards",
-                        "from": "non_attack",
-                        "to": {
-                            "name": "Judgment",
-                            "mana_cost": 1,
-                            "description": "Deal 5 damage to the enemy.",
-                            "type": "Attack",
-                            "cooldown": 5,
-                            "effect": {
-                                "actions": [
-                                    {
-                                        "type": "deal_damage",
-                                        "value": 5
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "He once believed mercy was strength, but the battlefield taught him otherwise. Every drop of blood spilt hardened his resolve. When the world turned its back on justice, he became its blade—cold, unyielding, and drenched in crimson."
         },
         {
@@ -258,88 +127,78 @@
             "type": "Attack",
             "rarity": "Common",
             "cooldown": 5,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "deal_damage",
-                        "value": 3
-                    },
-                    {
-                        "type": "reduce_cooldown",
-                        "target": "attack_cards",
-                        "value": 1
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "\"So many candies here.\"  \n\"Please, I’m sick of sweets. Haven’t we had enough sugar already?\"  \n\"It’s clean food. Until we find the exit, we can’t afford to be picky.\"  \n\"Spare me...\""
         },
         {
             "name": "Mist Veil",
-            "mana_cost": 1,
-            "description": "Apply 3 layers of Fog and 1 layer of Lost to the enemy. Lost: when taking damage, the target gains Fog equal to the damage taken.",
+            "mana_cost": 2,
+            "description": "Apply 3 layers of Mist and 1 layer of Lost to the enemy. Lost: when taking damage, the target gains Mist equal to the damage taken.",
             "type": "Effect",
             "rarity": "Common",
             "cooldown": 6,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "apply_status",
-                        "status": "Fog",
-                        "stacks": 3
-                    },
-                    {
-                        "type": "apply_status",
-                        "status": "Lost",
-                        "description": "When taking damage, gain equal stacks of Fog."
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "The accident's smoke spread across the land, choking every corner. The ceaseless machines spewed not smoke, but poison—an ever-expanding cloud that devoured the world."
         },
         {
             "name": "Deep Mist",
             "mana_cost": 1,
-            "description": "Apply 6 layers of Fog to the enemy. At the end of your next turn, set the enemy's Fog stacks to 3.",
+            "description": "Apply 6 layers of Mist to the enemy. At the end of your next turn, set the enemy's Mist stacks to 3.",
             "type": "Effect",
             "rarity": "Common",
             "cooldown": 3,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "apply_status",
-                        "status": "Fog",
-                        "stacks": 6
-                    },
-                    {
-                        "type": "delayed_action",
-                        "trigger": "end_of_next_turn",
-                        "action": {
-                            "type": "set_status_stacks",
-                            "status": "Fog",
-                            "value": 3
-                        }
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "Wearing a gas mask, he ventured into the factory’s core, where he found the unconscious Dahl. Carrying her back, he followed what he thought was the exit—but the path had changed. Lost in the haze, he realized the mist had swallowed even his memories."
         },
         {
             "name": "Midnight Hour",
             "mana_cost": 1,
-            "description": "Apply 'Midnight' to the enemy: Fog damage cannot be blocked by shields, and the same amount of damage is then dealt to the shield.",
+            "description": "Apply 'Midnight' to the enemy: Mist damage cannot be blocked by shields, and the same amount of damage is then dealt to the shield.",
             "type": "Effect",
             "rarity": "Common",
             "cooldown": 4,
-            "effect": {
-                "actions": [
-                    {
-                        "type": "add_effect",
-                        "effect": "Midnight",
-                        "description": "Fog damage bypasses shields and also damages them equally."
-                    }
-                ]
-            },
+            "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "At midnight, the mind grows restless. Memories of their near-death escape replay endlessly—but it no longer matters. They survived the mist, and that was enough."
+        },
+        {
+            "name":"Mist Hunt",
+            "mana_cost":2,
+            "description":"Deal 1 damage. Reduce the stack of Mist effect on enemy by 1,\nthen deal damage equals to the stack of Mist effect.",
+            "type":"Attack",
+            "rarity":"Rare",
+            "cooldown":4,
+            "image_path":"GUI/BattlePage/Afallen.jpg",
+            "backstory":"In the depths of the mist, the hunter becomes the hunted. Every shadow is a potential threat, every sound a warning. But in this game of survival, only the cunning prevail."
+        },
+        {
+            "name":"Mist Blade",
+            "mana_cost":1,
+            "description":"Deal 1 damage. Clear all Mist stacks on enemy, then increase this card's additional attack by the number of Mist stacks cleared.",
+            "type":"Attack",
+            "rarity":"Rare",
+            "cooldown":3,
+            "image_path":"GUI/BattlePage/Afallen.jpg",
+            "backstory":"Forged in the heart of the mist, the blade hums with latent power. Each strike not only wounds the body but also siphons energy from the very essence of the mist itself."
+        },
+        {
+            "name":"Shadow of the Mist",
+            "mana_cost":0,
+            "description":"When dealing damage to enemy using attack cards, add 1 stack of Midnight effect to enemy, last for 2 rounds.",
+            "type":"Passive",
+            "rarity":"Rare",
+            "cooldown":0,
+            "image_path":"GUI/BattlePage/Afallen.jpg",
+            "backstory":"In the heart of the mist, shadows dance with malevolent intent. Those who dare to confront it find their own fears reflected back, amplified by the very essence of the mist."
+        },
+        {
+            "name":"Ruined Forge",
+            "mana_cost":0,
+            "description":"Inflict 2 stacks of Mist when you use cards other than attack cards.\nMist: At the start of enemy's turn, deal 1 damage per Mist stack.",
+            "type":"Passive",
+            "rarity":"Rare",
+            "cooldown":0,
+            "image_path":"GUI/BattlePage/Afallen.jpg",
+            "backstory":"Amidst the desolation, the forge stands as a testament to resilience. Though battered and broken, it still radiates a faint warmth, hinting at the potential for rebirth and renewal."
         }
     ]
 }

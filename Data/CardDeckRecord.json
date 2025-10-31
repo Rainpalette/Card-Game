@@ -9,7 +9,7 @@
             "Holy Light",
             "Intimidate",
             "Critical Strike",
-            "Trick"
+            "Mist Veil"
         ]
     },
     {
@@ -17,12 +17,12 @@
         "cards": [
             "Normal Attack",
             "Defense",
-            "Shield Counter",
-            "Holy Light",
+            "Mist Hunt",
+            "Mist Veil",
             "Intimidate",
-            "Critical Strike",
-            "Trick",
-            "Heal"
+            "Mist Blade",
+            "Deep Mist",
+            "Midnight Hour"
         ]
     },
     {
@@ -30,14 +30,25 @@
         "cards": [
             "Normal Attack",
             "Heal",
-            "Critical Strike"
+            "Critical Strike",
+            "Defense",
+            "Shield Counter",
+            "Trick",
+            "Mist Veil",
+            "Intimidate"
         ]
     },
     {
         "deck_name": "Hollow Knight",
         "cards": [
-            "Trick",
-            "Shield Counter"
+            "Mist Blade",
+            "Mist Hunt",
+            "Midnight Hour",
+            "Deep Mist",
+            "Mist Veil",
+            "Normal Attack",
+            "Ruined Forge",
+            "Shadow of the Mist"
         ]
     }
 ]

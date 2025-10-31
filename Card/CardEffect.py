@@ -1,4 +1,5 @@
 from Card.Effect import Effect
+import random
 class CardEffect:
     def __init__(self):
         self.card = None
@@ -127,10 +128,32 @@ class CardEffect:
 #         battle.mob.defense -=1
 #         return current_effect
 
-class defenseReduction():
+
+#create a template for all effects to inherit
+class EffectTemplate():
     def __init__(self):
+        self.name = ""
+        self.description = ""
+        self.duration = 0
+        self.activated_times = 0
+        # self.types = ["WhenHolding", "OnTurnStart", "OnTurnEnd", "OnAttack", "OnDamaged", "Passive"]
+        self.type = ""
+        self.stack = 0
+        self.DurationByStack = False
+        self.image_path = "GUI/BattlePage/D.D.jpg"
+        self.stackable = True
+        # self.current_duration = self.duration
+    def apply_effect(self, battle):
+        pass
+
+    def remove_effect(self,battle=""):
+        pass
+class defenseReduction(EffectTemplate):
+    def __init__(self):
+        super().__init__()
         self.name = "defenseReduction"
         self.description = "Reduce defense by 1."
+        self.dedault_duration = 3
         self.duration = 3
         self.activated_times = 0
         self.types = ["WhenHolding", "OnTurnStart", "OnTurnEnd", "OnAttack", "OnDamaged", "Passive"]
@@ -145,3 +168,134 @@ class defenseReduction():
 
     def remove_effect(self, battle):
         battle.mob.defense += 1
+
+class Mist(EffectTemplate):
+    def __init__(self, stack):
+        super().__init__()
+        self.name = "Mist"
+        self.description = "Deal damage equals to the stack of this effect at the end of turn."
+        self.duration = stack
+        self.defaultduration = stack
+        self.activated_times = 0
+        self.types = ["WhenHolding", "OnTurnStart", "OnTurnEnd", "OnAttack", "OnDamaged", "Passive"]
+        self.type = "OnTurnEnd"
+        self.effect_type = "DamageOverTime"
+        self.stack = stack
+        self.DurationByStack = True
+        self.image_path = "GUI/BattlePage/D.D.jpg"
+        self.fixed_duration = 2
+        self.activate_midnight = False
+        self.activate_fixed_duration = False
+        self.card_effect = CardEffect()
+        # self.current_duration = self.duration
+    def apply_effect(self, battle):
+        print("Applying Mist effect with stack:", self.stack)
+        for effect in battle.mob.get_effects():
+            
+            if effect.name == "Midnight":
+                # self.card_effect.deal_damage_ignore_shield(self.stack, battle)
+                # self.activated_times += 1
+                self.apply_midnight(battle)
+                return
+        self.card_effect.deal_damage(self.stack, battle)
+        self.activated_times += 1
+
+    def remove_effect(self,battle=""):
+        pass
+    
+    def turn_down_mist(self):
+        self.stack = 3
+    
+    def apply_midnight(self, battle):
+        self.card_effect.deal_damage_ignore_shield(self.stack, battle)
+        if battle.mob.shield > 0 and battle.mob.shield <= self.stack:
+            battle.mob.shield = 0
+        elif battle.mob.shield > self.stack:
+            battle.mob.shield -= self.stack
+    
+    def activate(self, battle):
+        for effect in battle.mob.get_effects():
+            if effect.name == "Midnight" and self.stack > 0:
+                self.apply_midnight(battle)
+                return
+        if self.stack >0:
+            self.apply_effect(battle)
+
+
+class Lost(EffectTemplate):
+    def __init__(self):
+        super().__init__()
+        self.name = "Lost"
+        self.description = "Gain equal stack of effect 'Mist' as the damage taken.\nLost this effect after taking one incoming damage."
+        self.duration = 99
+        self.default_duration = 99
+        self.activated_times = 0
+        self.types = ["WhenHolding", "OnTurnStart", "OnTurnEnd", "OnAttack", "OnDamaged", "Passive"]
+        self.type = "OnDamaged"
+        self.stack = 1
+        self.DurationByStack = False
+        self.image_path = "GUI/BattlePage/D.D.jpg"
+        # self.current_duration = self.duration
+    def apply_effect(self, battle, damage_taken):
+        for effect in battle.mob.get_effects():
+            if effect.name == "Mist":
+                effect.stack += damage_taken
+                for effect in battle.mob.get_effects():
+                    if effect.name == "Lost":
+                        battle.mob.remove_effect(effect)
+                        print("Lost effect removed after triggering.")
+                        return
+        new_effect = Mist(damage_taken)
+        battle.mob.add_effect(new_effect)
+        self.activated_times += 1
+        for effect in battle.mob.get_effects():
+            if effect.name == "Lost":
+                battle.mob.remove_effect(effect)
+                print("Lost effect removed after triggering.")
+
+
+    def remove_effect(self,battle=""):
+        pass
+
+class Midnight(EffectTemplate):
+    def __init__(self):
+        super().__init__()
+        self.name = "Midnight"
+        self.description = "Mist damage cannot be blocked by shields\nthe same amount of damage is then dealt to the shield."
+        self.duration = 2
+        self.activated_times = 0
+        self.types = ["WhenHolding", "OnTurnStart", "OnTurnEnd", "OnAttack", "OnDamaged", "Passive"]
+        self.type = "WhenHolding"
+        self.stack = 1
+        self.DurationByStack = False
+        self.image_path = "GUI/BattlePage/D.D.jpg"
+        # self.current_duration = self.duration
+    def apply_effect(self, battle):
+        for effect in battle.mob.get_effects():
+            if effect.name == "Mist":
+                effect.activate_midnight = True
+        self.activated_times += 1
+
+    def remove_effect(self,battle=""):
+        for effect in battle.mob.get_effects():
+            if effect.name == "Mist":
+                effect.activate_midnight = False
+
+class Candy(EffectTemplate):
+    def __init__(self):
+        super().__init__()
+        self.name = "Candy"
+        self.description = "When enemy holding this effect, attack enemy will randomly reduce two card's cooldown by 1."
+        self.duration = 3
+        self.activated_times = 0
+        self.types = ["WhenHolding", "OnTurnStart", "OnTurnEnd", "OnAttack", "OnDamaged", "Passive"]
+        self.type = "OnAttack"
+        self.stack = 1
+        self.DurationByStack = False
+        self.image_path = "GUI/BattlePage/D.D.jpg"
+        # self.current_duration = self.duration
+    def apply_effect(self, battle):
+        pass
+
+    def remove_effect(self,battle=""):
+        pass

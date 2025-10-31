@@ -38,7 +38,7 @@ class ChooseDeckPage(QWidget):
         self.exit_button.clicked.connect(self.on_click_exit_deck)
 
         self.set_current_deck_label = QLabel(f"Current Deck:\n{self.deck.in_use_deck_name}")
-        self.set_current_deck_label.setStyleSheet("font-size: 18px; font-weight: bold;")
+        self.set_current_deck_label.setStyleSheet("font-size: 18px; font-weight: bold;color:white;")
         self.page_layout.addWidget(self.set_current_deck_label, 0, 3)
 
         # self.set_current_deck_button.setFixedSize(150,50)

@@ -1,5 +1,5 @@
 class Effect:
-    def __init__(self, name, description, duration, effect_type, stack):
+    def __init__(self, name="", description="", duration=0, effect_type="", stack=0):
         self.name = name
         self.description = description
         self.duration = duration

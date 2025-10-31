@@ -8,6 +8,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"../..")))
 from Card.BattleContent import *
+from Card.Effect import *
 
 class SkillBar(QWidget):
         def __init__(self, title, description):
@@ -43,11 +44,13 @@ class SkillBar(QWidget):
             # self.skill_bar.setLayout(self.skill_bar_layout)
 
 class EffectBar(QWidget):
-     def __init__(self, title, description):
+    def __init__(self, effect=Effect()):
         super().__init__()
         # skill = crown['skills']
         # current_skill = skill[0]
-        self.name = title
+        self.name = effect.name
+        self.effect = effect
+        
         self.effect_icon = QLabel("Icon")
         self.effect_pixmap = QPixmap("GUI/BattlePage/Afallen.jpg")
         self.effect_icon.setPixmap(self.effect_pixmap)
@@ -55,20 +58,30 @@ class EffectBar(QWidget):
         self.effect_icon.setFixedSize(90,90)
 
         self.effect_title = QLabel()
-        self.effect_title.setText(title)
+        self.effect_title.setText(self.name)
         self.effect_title.setStyleSheet("font-size: 30px;")
+        
+        self.duration_time = QLabel()
+        self.duration_time.setText(f"Duration: {self.effect.duration}\nStack: {self.effect.stack}")
+        self.effect_layout = QHBoxLayout()
+        self.effect_layout.addWidget(self.effect_title, alignment=Qt.AlignLeft)
+        self.effect_layout.addStretch(1)
+        self.effect_layout.addWidget(self.duration_time, alignment=Qt.AlignRight)
 
         self.effect_description = QLabel()
-        self.effect_description.setText(description)
+        self.effect_description.setText(self.effect.description)
         self.effect_description.setStyleSheet("font-size:20px;")
 
         self.effect_description_layout = QVBoxLayout()
-        self.effect_description_layout.addWidget(self.effect_title)
+        self.effect_description_layout.addLayout(self.effect_layout)
         self.effect_description_layout.addWidget(self.effect_description)
 
         self.effect_bar_layout = QHBoxLayout(self)
         self.effect_bar_layout.addWidget(self.effect_icon)
         self.effect_bar_layout.addLayout(self.effect_description_layout)
+    
+    def refresh(self):
+        self.duration_time.setText(f"Duration: {self.effect.duration}\nStack: {self.effect.stack}")
 
 
 class EnemyPage(QWidget):
@@ -149,7 +162,7 @@ class EnemyPage(QWidget):
         self.scroll_area_layout.addWidget(self.effect)
         if self.battle.mob.effects:
             for effect in self.battle.mob.effects:
-                effect_bar = EffectBar(effect.name, effect.description)
+                effect_bar = EffectBar(effect)
                 self.scroll_area_layout.addWidget(effect_bar)
                 self.scroll_area_layout.addStretch(1)
              
@@ -162,7 +175,7 @@ class EnemyPage(QWidget):
         self.scroll_area.setWidgetResizable(True)
         #self.scroll_area.setLayout(self.scroll_area_layout)
         for i in range(8):
-            effect_bar = EffectBar("", "")
+            effect_bar = EffectBar()
             self.scroll_area_layout.addWidget(effect_bar)
             effect_bar.hide()
             self.effect_list.append(effect_bar)
@@ -243,18 +256,26 @@ class EnemyPage(QWidget):
         #     effect_bar.hide()
         # self.update_list = self.battle.mob.effects
         self.update_list = self.battle.mob.effects
+        print("updating effect status")
         count =0
         hide_count = len(self.update_list)
         if self.update_list == []:
             for effect_bar in self.effect_list:
                 effect_bar.hide()
         else:
-            for effect in self.update_list:
+            for effect in self.battle.mob.effects:
                 self.effect_list[count].effect_title.setText(effect.name)
                 self.effect_list[count].effect_description.setText(effect.description)
                 self.effect_list[count].effect_pixmap = QPixmap(effect.image_path)
                 self.effect_list[count].effect_icon.setPixmap(self.effect_list[count].effect_pixmap)
+                self.effect_list[count].duration_time.setText(f"Duration: {effect.duration}\nStack: {effect.stack}")
+
                 self.effect_list[count].show()
+                if effect.DurationByStack:
+                    effect.duration = effect.stack
+                # self.effect_list[count].refresh()
+                print(f"Stack of effect {self.effect_list[count].effect.name}: {self.effect_list[count].effect.stack}")
+                print(f"Duration of effect {self.effect_list[count].effect.name}: {self.effect_list[count].effect.duration}")
                 count += 1
             if hide_count < len(self.effect_list):
                 self.effect_list[hide_count].hide()

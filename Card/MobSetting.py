@@ -16,6 +16,10 @@ class MobSetting(ABC):
         self.attack = 0
 
     def add_effect(self, effect):
+        for existing_effect in self.effects:
+            if existing_effect.name == effect.name and existing_effect.stackable:
+                existing_effect.stack += effect.stack
+                return
         self.effects.append(effect)
 
     def add_multiple_effect(self, effect, stack):
@@ -25,6 +29,7 @@ class MobSetting(ABC):
     def remove_effect(self, effect):
         if effect in self.effects:
             self.effects.remove(effect)
+        print(f"Effect {effect.name} removed from mob {self.name}")
 
     def get_effects(self):
         effect_list = []

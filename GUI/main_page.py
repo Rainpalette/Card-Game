@@ -89,7 +89,8 @@ class MainWindow(QMainWindow):
         self.compendium_page = CompendiumPage()
         self.choose_card_deck = ChooseDeckPage(self.deck)
         self.card_deck_setup = CardDeckInformation(self.create_deck)
-        
+        self.test_label = QLabel(self.battle_page)
+        self.test_label.setText("Test Label")
         self.stacked_widget = QStackedWidget()
 
 
@@ -259,9 +260,9 @@ class MainWindow(QMainWindow):
             if deck['deck_name'] == deck_name:
                 print(f"Deck found: {deck['deck_name']}")
                 self.deck.current_deck = deck['cards']
-                # self.deck.current_deck_name = deck_name
+                self.deck.current_deck_name = deck_name
                 self.deck.in_use_deck_name = deck_name
-                # print(f"Current deck set to: {self.deck.current_deck}")
+                print(f"Current deck set to: {self.deck.current_deck}")
                 self.show_card_page.deck = self.deck
                 self.show_card_page.refresh_card_deck()
                 self.choose_card_deck.refresh_current_deck_label()
@@ -290,7 +291,7 @@ class MainWindow(QMainWindow):
         for skill in temp_list:
             data = {
                 "name": skill.name,
-                "image_path": "GUI/BattlePage/Afallen.jpg"
+                "image_path": skill.image_path
             }
             card_name_list.append(data)
 
@@ -299,8 +300,10 @@ class MainWindow(QMainWindow):
         self.create_deck.refresh_page()
         self.create_deck.refresh_deck_name(self.deck.deck_list[deck_id]['deck_name'])
         self.deck.current_deck_name = self.deck.deck_list[deck_id]['deck_name']
+        self.create_deck.current_deck_name = self.deck.current_deck_name
         print(f"Loaded deck {deck_id}: {self.deck.current_deck}")
         self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.create_deck))
+        print(self.deck.current_deck_name)
     
     def set_card(self,name):
         for card_info in self.card_info_list:
@@ -335,10 +338,8 @@ class MainWindow(QMainWindow):
             if card_info['name'] == name:
                 found_card_info = card_info
                 break
-        
         if not found_card_info:
             return
-        
         # Check if card is already in deck
         for data in self.create_deck.card_showcase_data_list:
             if data['name'] == name:
@@ -368,10 +369,6 @@ class MainWindow(QMainWindow):
             print("Reached limit.")
             self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.create_deck))
             return
-
-        
-
-        
 
         # If no empty slot found, append new card
         if not empty_slot_found:
@@ -530,8 +527,33 @@ class MainWindow(QMainWindow):
             self.stacked_widget.setCurrentIndex(self.page_list[0])
             self.page_list = []
 
-    
+    def on_attack(self):
+        print(f"On attack: Mob heal before: {self.battle.mob.before_change_health}, after: {self.battle.mob.health}")
+        if self.battle.mob.before_change_health > self.battle.mob.health:
+            print("yes, it is")
+            for effect in self.battle.mob.get_effects():
+                if effect.type == "OnDamaged":
+                    print(f"Applying OnDamaged effect: {effect.name}")
+                    effect.apply_effect(self.battle, self.battle.mob.before_change_health - self.battle.mob.health)
+        self.battle_page.show_damage_on_player(self.battle_backend.calculate_damage(self.battle.player.before_change_health, self.battle.player.health))
+        self.battle_page.show_damage_on_enemy(self.battle_backend.calculate_damage(self.battle.mob.before_change_health, self.battle.mob.health))
+        if self.battle.mob.health<=0:
+            QTimer.singleShot(1800, lambda:self.battle_page.enemy_damage_label.hide())
+            QTimer.singleShot(1800, lambda:self.battle_page.player_damage_label.hide())
+            QTimer.singleShot(2000,lambda:self.battle_page.clear_skill_label())
+            QTimer.singleShot(2000,lambda:self.win())
+            
+        else:
+            QTimer.singleShot(2000, lambda:self.battle_page.clear_skill_label())
+            QTimer.singleShot(1800, lambda:self.battle_page.enemy_damage_label.hide())
+            QTimer.singleShot(1800, lambda:self.battle_page.player_damage_label.hide())
+        for card in self.deck.current_deck:
+            if card.type == "Passive" and card.activate_on_attack and self.battle.mob.before_change_health > self.battle.mob.health:
+                card.activate_effect(self.battle)
+        self.battle_page.update_status(self.deck.current_deck,self.show_card_page)
+        self.enemy_page.update_effect_status()
 
+#TODO: bug on saving card: it will not update in game after saving changes
     
     def play_card(self, index):
         card_index = index-1
@@ -543,11 +565,37 @@ class MainWindow(QMainWindow):
             print("no mana")
             return
         self.change_page(self.stacked_widget.indexOf(self.battle_page))
-        current_health = self.battle.mob.before_change_health
+        # current_health = self.battle.mob.before_change_health
+        
         self.battle_backend.play_card(card)
+        if not card.type =="Attack":
+            print("Passive card played")
+            for c in self.deck.current_deck:
+                if c.type == "Passive" and not c.activate_on_attack:
+                    print(c.name)
+                    c.activate_effect(self.battle)
+                    break
+            self.battle_page.update_status(self.deck.current_deck,self.show_card_page)
+            self.enemy_page.update_effect_status()
+        
+        print(f"Mob heal before: {self.battle.mob.before_change_health}, after: {self.battle.mob.health}")
         self.battle_page.Player_use_skill(card.name)
-        self.battle_page.show_damage_on_player(self.battle_backend.calculate_damage(self.battle.player.before_change_health, self.battle.player.health))
-        self.battle_page.show_damage_on_enemy(self.battle_backend.calculate_damage(current_health, self.battle.mob.health))
+        self.on_attack()
+        if not card.additional_attack:
+            print("no additional attack")
+        if card.additional_attack:
+            print("additional attack")
+            QTimer.singleShot(1100, lambda:self.battle_backend.play_card(card, True))
+            # QTimer.singleShot(1100, lambda:self.battle_page.Player_use_skill(card.name + " (Additional Attack)"))
+            QTimer.singleShot(1200, lambda:self.on_attack())    
+        # if current_health > self.battle.mob.health:
+        #     print("yes, it is")
+        #     for effect in self.battle.mob.get_effects():
+        #         if effect.type == "OnDamaged":
+        #             print(f"Applying OnDamaged effect: {effect.name}")
+        #             effect.apply_effect(self.battle, self.battle.mob.before_change_health - self.battle.mob.health)
+        # self.battle_page.show_damage_on_player(self.battle_backend.calculate_damage(self.battle.player.before_change_health, self.battle.player.health))
+        # self.battle_page.show_damage_on_enemy(self.battle_backend.calculate_damage(current_health, self.battle.mob.health))
         # self.battle.mob.before_change_health = self.battle.mob.health
         # # self.battle.mob.before_change_health = self.battle.mob.health
         # self.battle.player.before_change_health = self.battle.player.health
@@ -562,19 +610,21 @@ class MainWindow(QMainWindow):
             if card.name == current_card.name:
                 print(f"Setting cooldown for card: {card.name} to {card.cooldown}")
                 current_card.in_cooldown(card.cooldown)
+                current_card.update_cooldown_display(card.cooldown)
                 # current_card.update_cooldown_display(card.cooldown, card.current_cooldown)
                 break
+        self.enemy_page.update_effect_status()
         #card.in_cooldown()
-        if self.battle.mob.health<=0:
-            QTimer.singleShot(1800, lambda:self.battle_page.enemy_damage_label.hide())
-            QTimer.singleShot(1800, lambda:self.battle_page.player_damage_label.hide())
-            QTimer.singleShot(2000,lambda:self.battle_page.clear_skill_label())
-            QTimer.singleShot(2000,lambda:self.win())
+        # if self.battle.mob.health<=0:
+        #     QTimer.singleShot(1800, lambda:self.battle_page.enemy_damage_label.hide())
+        #     QTimer.singleShot(1800, lambda:self.battle_page.player_damage_label.hide())
+        #     QTimer.singleShot(2000,lambda:self.battle_page.clear_skill_label())
+        #     QTimer.singleShot(2000,lambda:self.win())
             
-        else:
-            QTimer.singleShot(2000, lambda:self.battle_page.clear_skill_label())
-            QTimer.singleShot(1800, lambda:self.battle_page.enemy_damage_label.hide())
-            QTimer.singleShot(1800, lambda:self.battle_page.player_damage_label.hide())
+        # else:
+        #     QTimer.singleShot(2000, lambda:self.battle_page.clear_skill_label())
+        #     QTimer.singleShot(1800, lambda:self.battle_page.enemy_damage_label.hide())
+        #     QTimer.singleShot(1800, lambda:self.battle_page.player_damage_label.hide())
     def win(self):
         self.change_page(self.stacked_widget.indexOf(self.central_widget))
         pygame.mixer.music.load(r"C:\Users\User\Downloads\CardGame\The Forgotten Girl.mp3")
@@ -582,13 +632,36 @@ class MainWindow(QMainWindow):
         pygame.mixer.music.set_volume(0.5)    
     def end_turn(self):
             self.battle_backend.end_turn(self.deck.current_deck)
+            for effect in self.battle.mob.get_effects():
+                if effect.name == "Mist":
+                    print(f"current mist stacks: {effect.stack}")
+                    print(f"duration: {effect.duration}")
+
+            self.enemy_page.update_effect_status()
+            wait = False
+            if not self.battle.mob.before_change_health == self.battle.mob.health:
+                print(f"Mob health before: {self.battle.mob.before_change_health}, after: {self.battle.mob.health}")
+                self.battle_page.show_damage_on_enemy(self.battle_backend.calculate_damage(self.battle.mob.before_change_health, self.battle.mob.health))
+                self.battle_page.update_status(self.deck.current_deck,self.show_card_page)
+                QTimer.singleShot(1500,lambda:self.battle_page.enemy_damage_label.hide())
+                wait = True
+            if not self.battle.player.before_change_health == self.battle.player.health:
+                print(f"Player health before: {self.battle.player.before_change_health}, after: {self.battle.player.health}")
+                self.battle_page.show_damage_on_player(self.battle_backend.calculate_damage(self.battle.player.before_change_health, self.battle.player.health))
+                self.battle_page.update_status(self.deck.current_deck,self.show_card_page)
+                QTimer.singleShot(1500,lambda:self.battle_page.player_damage_label.hide())
+                wait = True
+
             for card in self.deck.current_deck:
                 for data in self.show_card_page.card_gallery:
                     if card.name == data.name and card.current_cooldown>0:
                         data.update_cooldown_display(card.current_cooldown)
-            self.battle_backend.start_turn()
             
-            self.run_boss_turn()
+            self.battle_backend.start_turn()
+            if wait:
+                QTimer.singleShot(2000, lambda:self.run_boss_turn())
+            else:
+                self.run_boss_turn()
             # while True:
             #     if self.battle.mob.mana<=0:
             #         break
@@ -600,7 +673,7 @@ class MainWindow(QMainWindow):
     def run_boss_turn(self):
         print("Boss turn start:", self.battle.mob.mana)
         
-        if self.battle.player.health <=0:
+        if self.battle.player.health <=0 or self.battle.mob.health <=0: # or self.battle_backend.is_battle_over:
             self.battle_page.disable_action()
             self.battle_page.boss_use_skill("")
             self.battle.mob.reset_skill()
@@ -618,6 +691,7 @@ class MainWindow(QMainWindow):
             self.battle_page.update_status(self.deck.current_deck,self.show_card_page)
             QTimer.singleShot(1800, lambda:self.battle_page.enemy_damage_label.hide())
             QTimer.singleShot(1800, lambda:self.battle_page.player_damage_label.hide())
+            self.enemy_page.update_effect_status()
             return
         
         

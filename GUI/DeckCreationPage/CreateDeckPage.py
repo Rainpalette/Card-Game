@@ -23,6 +23,52 @@ class CardInDeck(Card):
         elif event.button() == Qt.RightButton:
             self.rightClicked.emit(self.name)
 
+    def clear_card(self):
+        self.name = ""
+        self.image_path = ""
+        self.card_name.setText("")
+        self.setStyleSheet("background-color: #C19A6B;")
+        self.card.setStyleSheet("background-color: #C19A6B;")
+        # self.card.setStyleSheet("""
+        #     QWidget{
+        #         border-radius: 8px;
+        #         border: 2px solid #000000;
+        #                         }""")
+        self.card_image.clear()
+        try:
+            self.disconnect()
+        except TypeError:
+            pass
+    
+    def refresh_card(self):
+        self.card_name.setText(self.name)
+        self.pixmap = QPixmap(self.image_path).scaled(150,350,Qt.KeepAspectRatio)
+        self.card_image.setPixmap(self.pixmap)
+        if not self.name=="":
+            self.card.setStyleSheet("background-color: #C19A6B;")
+            self.card.setStyleSheet("""
+                QWidget{
+                    border-radius: 8px;
+                    border: 2px solid #8b5a2b;
+                    font-size:13px;
+                                    }""")
+            self.setStyleSheet("""
+                QWidget {
+                    background-color: #caa472;
+                    
+                }
+                QWidget:hover {
+                    background-color: #d4b483;
+                    
+                }
+            """)
+        else:
+            self.setStyleSheet("background-color: #C19A6B;")
+            self.card.setStyleSheet("background-color: #C19A6B;")
+            self.card_image.clear()
+            self.card_name.setText("")
+
+
 class CardShowcase(Card):
     leftClicked = pyqtSignal(str)
     rightClicked = pyqtSignal(str)
@@ -133,7 +179,8 @@ class CreateDeckPage(QWidget):
         self.deck_page_layout = QGridLayout(self)
         self.current_deck_name = ""
         self.page = 1
-        self.max_page = 2
+        self.card_info_list = []
+        self.max_page = 10
         self.card_list = []
         self.card_showcase_data_list = []  # Will hold the data for displayed cards
         self.card_showcase_list = []  # Will hold the actual card widgets
@@ -160,13 +207,14 @@ class CreateDeckPage(QWidget):
         with open(r"Data\Card.json", "r", encoding="utf-8") as f:
             self.cards_info = json.load(f)
 
-        self.card_info_list = []
+        
         for card in self.cards_info["cards"]:
             card_info = {
                 "name": card["name"],
                 "description": card["description"],
                 "mana_cost": card["mana_cost"],
-                "cooldown": card["cooldown"]
+                "cooldown": card["cooldown"],
+                "type": card["type"]
             }
             self.card_info_list.append(card_info)
         self.card_showcase_layout = QGridLayout()
@@ -212,7 +260,7 @@ class CreateDeckPage(QWidget):
         self.deck_page_layout.addLayout(self.page_layout,2,1)
 
         self.deck_name_label = QLabel("Deck Name")
-        self.deck_name_label.setStyleSheet("font-size: 20px;")
+        self.deck_name_label.setStyleSheet("font-size: 20px;color:white")
         self.deck_page_layout.addWidget(self.deck_name_label,0,1)
 
         self.deck_save_button = QPushButton("Save")
@@ -251,9 +299,17 @@ class CreateDeckPage(QWidget):
            
         card_count = 0
         for i in range(8):
-            self.card_list[card_count].name = self.cards_info['cards'][current_index+card_count]['name']
-            self.card_list[card_count].image_path = "GUI/BattlePage/Afallen.jpg"
-            self.card_list[card_count].refresh_card()
+            if current_index+card_count < len(self.cards_info['cards']):
+                self.card_list[card_count].name = self.cards_info['cards'][current_index+card_count]['name']
+                self.card_list[card_count].image_path = "GUI/BattlePage/Afallen.jpg"
+                self.card_list[card_count].leftClicked.connect(self.on_card_left_clicked)
+                self.card_list[card_count].rightClicked.connect(self.on_card_right_clicked)
+                self.card_list[card_count].refresh_card()
+            else:
+                # self.card_list[card_count].name = ""
+                # self.card_list[card_count].image_path = ""
+                # self.card_list[card_count].refresh_card()
+                self.card_list[card_count].clear_card()
             card_count+=1
 
     def next_page(self):
@@ -304,7 +360,7 @@ class CreateDeckPage(QWidget):
                     card.leftClicked.disconnect()
                     card.rightClicked.disconnect()
                 except TypeError:
-                    pass  # Already disconnected
+                    pass  
                 card.refresh_card()
                 delete_card = False
                 break
@@ -360,10 +416,12 @@ class CreateDeckPage(QWidget):
             card_showcase.refresh_card()
 
     def save_card_deck(self):
+        print(f"Current Deck Name: {self.current_deck_name}")
         card_list = []
         for card in self.card_showcase_data_list:
             card_list.append(card.get("name"))
         deck_name = self.current_deck_name if self.current_deck_name else f"Deck {len(self.deck.deck_list)+1}"
+        print("Deck Name:", deck_name)
         data = {
             "deck_name": deck_name,
             "cards": card_list
@@ -393,7 +451,7 @@ class ConfirmationPage(QWidget):
         self.deck_stage = deck
         self.card_name = ""
         self.label = QLabel(f"Are you sure to add {self.card_name} into {self.deck_stage.current_deck_name} deck?")
-        self.label.setStyleSheet("font-size: 30px;")
+        self.label.setStyleSheet("font-size: 30px;color:white;")
 
         self.yesButton = QPushButton("Yes")
         self.yesButton.setMaximumSize(100,100)

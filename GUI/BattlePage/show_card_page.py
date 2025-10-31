@@ -85,9 +85,9 @@ class Card(QWidget):
         self.card_cooldown_reminder.setFixedSize(70,70)
         
         self.card_cooldown_reminder.hide()
-        self.label_effect = QGraphicsOpacityEffect(self.card_cooldown_reminder)
-        self.label_effect.setOpacity(1.0)
-        self.card_cooldown_reminder.setGraphicsEffect(self.label_effect)
+        # self.label_effect = QGraphicsOpacityEffect(self.card_cooldown_reminder)
+        # self.label_effect.setOpacity(1.0)
+        # self.card_cooldown_reminder.setGraphicsEffect(self.label_effect)
         self.card_cooldown_reminder.raise_()
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -99,12 +99,13 @@ class Card(QWidget):
         #self.setWindowOpacity(0.5)
         # self.setGraphicsEffect(QGraphicsOpacityEffect(opacity=0.5))
         self.opacity_effect.setOpacity(0.5)
-        self.label_effect.setOpacity(1.0)
+        # self.label_effect.setOpacity(1.0)
+
         # self.card_cooldown_reminder.setText(str(current_cooldown))
         # self.card_cooldown_reminder.setGraphicsEffect(QGraphicsOpacityEffect(opacity=2.0))
         # self.card_cooldown_reminder.show()
         self.card_cooldown_reminder.setText(str(current_cooldown))
-        self.card_cooldown_reminder.raise_()
+        # self.card_cooldown_reminder.raise_()
         self.card_cooldown_reminder.show()
     
     def cooldown_end(self):
@@ -128,6 +129,7 @@ class Card(QWidget):
         #     }
         # """)
     def update_cooldown_display(self, cooldown):
+        print("Updating cooldown display to:", cooldown)
         self.card_cooldown_reminder.setText(str(cooldown))
         if not hasattr(self, 'label_effect') or not self.label_effect:
             self.label_effect = QGraphicsOpacityEffect(self.card_cooldown_reminder)
@@ -157,7 +159,10 @@ class CardGridWindow(QWidget):
                     card = Card(self.deck.get_card_name(card_count), self.deck.get_card_image(card_count))
                     card.id = card_count+1
                     card.rightClicked.connect(self.on_card_clicked)
-                    card.leftClicked.connect(self.use_card)
+                    if not self.deck.current_deck[card_count].type == "Passive":
+                        card.leftClicked.connect(self.use_card)
+                    # print(f"Connecting left click for card: {self.deck.get_card_name(card_count)}")
+                    # print(f"Card type: {self.deck.current_deck[card_count].type}")
                     grid.addWidget(card, row+1, col+1)
                     self.card_gallery.append(card)
                     card_count +=1
@@ -189,6 +194,12 @@ class CardGridWindow(QWidget):
         card_count = 0
         # self.card_gallery.clear()
         for card in self.deck.current_deck:
+            if card.type == "Passive":
+                try:
+                    self.card_gallery[count].leftClicked.disconnect()
+                    print(f"Disconnected left click for card: {card.name}")
+                except Exception as e:
+                    print(f"Error disconnecting leftClicked for card {card.name}: {e}")
             self.card_gallery[count].name = card.name
             self.card_gallery[count].image_path = card.image_path
             self.card_gallery[count].refresh_card()
