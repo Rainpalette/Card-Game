@@ -142,6 +142,7 @@ class EffectTemplate():
         self.DurationByStack = False
         self.image_path = "GUI/BattlePage/D.D.jpg"
         self.stackable = True
+        self.effect_on_card = False
         # self.current_duration = self.duration
     def apply_effect(self, battle):
         pass
@@ -293,9 +294,26 @@ class Candy(EffectTemplate):
         self.stack = 1
         self.DurationByStack = False
         self.image_path = "GUI/BattlePage/D.D.jpg"
+        self.effect_on_card = True
         # self.current_duration = self.duration
-    def apply_effect(self, battle):
-        pass
+    def apply_effect(self, deck):
+        print("Applying Candy effect to reduce cooldowns.")
+        cards_on_cooldown = [card for card in deck.current_deck if card.current_cooldown > 0]
+        if len(cards_on_cooldown) == 0:
+            return
+            
+        # Determine how many cards to reduce cooldown for (up to 2, but limited by available cards)
+        num_cards = min(2, len(cards_on_cooldown))
+        random_indices = random.sample(range(len(cards_on_cooldown)), num_cards)
+        
+        for i in random_indices:
+            card = cards_on_cooldown[i]
+            if card.current_cooldown > 0:
+                card.current_cooldown -= 1
+                print("Current cooldown of card", card.name, "reduced to", card.current_cooldown)
+                self.activated_times += 1
+            
+            
 
     def remove_effect(self,battle=""):
         pass

@@ -19,6 +19,9 @@ class CardSetting(ABC):
         self.additional_attack = False
         self.activated_times = 0
         self.activate_on_attack = False
+        self.effect_on_card = False
+        self.effect_on_battle_content = True
+        self.activate_on_game_start = False
 
     @abstractmethod
     def use_card(self, battle):
@@ -39,6 +42,7 @@ class NormalAttack(CardSetting):
             cooldown=3,
             image_path="Card/CardIcon/Sword.png"
         )
+        
 
     def use_card(self, battle):
         card_effect.deal_damage(5,battle)
@@ -286,13 +290,101 @@ class RuinedForge(CardSetting):
     def activate_effect(self, battle):
         battle.mob.add_effect(Mist(2))
 
+class CandyBullet(CardSetting):
+    def __init__(self):
+        super().__init__(
+            name="Candy Bullet",
+            mana_cost=2,
+            description="Deal 4 damage. Apply effect Candy to the target.\nCandy: When enemy holding this effect, attack enemy will randomly reduce two card's cooldown by 1.",
+            card_type="Attack",
+            rarity="Rare",
+            cooldown=5
+        )
+
+    def use_card(self, battle):
+        card_effect.deal_damage(4, battle)
+        battle.mob.add_effect(Candy())
+
+class SweetSolace(CardSetting):
+    def __init__(self):
+        super().__init__(
+            name="Sweet Solace",
+            mana_cost=2,
+            description="Reduce all the card's maximum cooldown by 1.",
+            card_type="Effect",
+            rarity="Rare",
+            cooldown=6
+        )
+        self.effect_on_card = True
+        self.effect_on_battle_content = False
+
+    def use_card(self, deck):
+        for card in deck.current_deck:
+            if card.cooldown > 0:
+                card.cooldown -= 1
+                # for card in deck.current_deck:
+                #     print(f"Card: {card.name}, Cooldown: {card.current_cooldown}")
+
+class OathOfResolve(CardSetting):
+    def __init__(self):
+        super().__init__(
+            name="Oath of Resolve",
+            mana_cost=2,
+            description="When the game starts, increase all cards maximum cooldown by 3. Reduce the damage dealt of this card by the sum of all cards' maximum cooldowns. Deal 60 damage to enemy.",
+            card_type="Attack",
+            rarity="Rare",
+            cooldown=7
+        )
+        self.effect_on_card = True
+        self.effect_on_battle_content = True
+        self.activate_on_game_start = True
+
+
+    def use_card(self, battle,deck):
+        basic_damage = 60
+        reduction = 0
+        for card in deck.current_deck:
+            print(f"{card.name}: {card.cooldown}")
+            reduction += card.cooldown
+        final_damage = basic_damage - reduction
+        print(f"value of final damage: {final_damage}")
+        card_effect.deal_damage(final_damage, battle)
+
+    def activate_effect(self,deck):
+        for card in deck.current_deck:
+            card.cooldown +=3
+class Redemption(CardSetting):
+    def __init__(self):
+        super().__init__(
+            name="Redemption",
+            mana_cost=2,
+            description="End the cooldown of the card that have the highest cooldown. According to the cooldown remain, increase the cooldown of this card for 1 time. Restore mana to full.",
+            card_type="Effect",
+            rarity="Rare",
+            cooldown=16
+        )
+        self.effect_on_card = True
+        self.effect_on_battle_content = True
+    
+    def use_card(self, battle,deck):
+        max = 0
+        target_card = None
+        for card in deck.current_deck:
+            if card.current_cooldown >max:
+                max = card.current_cooldown
+                target_card = card
+        if not target_card:
+            return
+        else:
+            target_card.current_cooldown = 0
+            battle.player.mana = battle.player.max_mana
 
 class Card_list():
     def __init__(self):
         self.card_list = [NormalAttack(),Heal(),Defense(),ShieldCounter(),
                           HolyLight(),Intimidate(),CriticalStrike(),Trick(),CandyBomb(),MistVeil(),
                           DeepMist(),MidnightHour(),MistHunt(),MistBlade(),ShadowOfTheMist(),
-                          RuinedForge()
+                          RuinedForge(),CandyBullet(),SweetSolace(),OathOfResolve(), Redemption()
                           ]
     
     # def save_cards_to_json(self, filename="Data/CardDetails.json"):

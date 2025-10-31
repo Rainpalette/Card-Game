@@ -501,6 +501,11 @@ class MainWindow(QMainWindow):
         self.battle.player.before_change_health = self.battle.player.health
         print(f"Mob health before: {self.battle.mob.before_change_health}, after: {self.battle.mob.health}")
         print(f"Player health before: {self.battle.player.before_change_health}, after: {self.battle.player.health}")
+        #检查是否有入场曲
+        for card in self.deck.current_deck:
+            if card.activate_on_game_start:
+                print(f"Activating battle start effect for card: {card.name}")
+                card.activate_effect(self.deck)
         pygame.mixer.music.stop()
         pygame.mixer.music.load(r"C:\Users\User\Downloads\CardGame\フリーBGM鏡の国のアリス症候群ダークメルヘン戦闘ゴシックかっこいい疾走感.mp3")
         pygame.mixer.music.play(-1)
@@ -567,7 +572,8 @@ class MainWindow(QMainWindow):
         self.change_page(self.stacked_widget.indexOf(self.battle_page))
         # current_health = self.battle.mob.before_change_health
         
-        self.battle_backend.play_card(card)
+        self.battle_backend.play_card(card,False,self.deck)
+        self.battle_page.update_status(self.deck.current_deck,self.show_card_page)
         if not card.type =="Attack":
             print("Passive card played")
             for c in self.deck.current_deck:
@@ -577,7 +583,14 @@ class MainWindow(QMainWindow):
                     break
             self.battle_page.update_status(self.deck.current_deck,self.show_card_page)
             self.enemy_page.update_effect_status()
-        
+
+        if card.type == "Attack":
+            print("Attack card played")
+            for effect in self.battle.mob.get_effects():
+                if effect.effect_on_card:
+                    print(f"Current candy stacks: {effect.stack}")
+                    print(f"Duration: {effect.duration}")
+                    effect.apply_effect(self.deck)
         print(f"Mob heal before: {self.battle.mob.before_change_health}, after: {self.battle.mob.health}")
         self.battle_page.Player_use_skill(card.name)
         self.on_attack()

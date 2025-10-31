@@ -123,9 +123,9 @@
         {
             "name": "Candy Bullet",
             "mana_cost": 1,
-            "description": "Deal 3 damage and reduce the cooldown of all attack cards by 1 turn.",
+            "description": "Deal 4 damage. Apply effect Candy to the target.\nCandy: When enemy holding this effect, attack enemy will randomly reduce two card's cooldown by 1.",
             "type": "Attack",
-            "rarity": "Common",
+            "rarity": "Rare",
             "cooldown": 5,
             "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory": "\"So many candies here.\"  \n\"Please, I’m sick of sweets. Haven’t we had enough sugar already?\"  \n\"It’s clean food. Until we find the exit, we can’t afford to be picky.\"  \n\"Spare me...\""
@@ -199,6 +199,37 @@
             "cooldown":0,
             "image_path":"GUI/BattlePage/Afallen.jpg",
             "backstory":"Amidst the desolation, the forge stands as a testament to resilience. Though battered and broken, it still radiates a faint warmth, hinting at the potential for rebirth and renewal."
+        },
+        {
+            "name":"Sweet Solace",
+            "mana_cost":2,
+            "description":"Reduce all the card's maximum cooldown by 1.",
+            "type":"Effect",
+            "rarity":"Rare",
+            "cooldown":6,
+            "image_path":"GUI/BattlePage/Afallen.jpg",
+            "backstory":"In a world shrouded by mist, moments of clarity are rare and precious. This sweet solace offers a brief respite from the chaos, allowing one to heal and gather strength for the battles ahead."
+        },
+        {
+            "name":"Oath of Resolve",
+            "mana_cost":2,
+            "description":"When the game starts, increase all cards maximum cooldown by 3. Reduce the damage dealt of this card by the sum of all cards' maximum cooldowns. Deal 60 damage to enemy.",
+            "type":"Attack",
+            "rarity":"Rare",
+            "cooldown":7,
+            "image_path":"GUI/BattlePage/Afallen.jpg",
+            "backstory":"\"So many candies here.\"  \n\"Please, I’m sick of sweets. Haven’t we had enough sugar already?\"  \n\"It’s clean food. Until we find the exit, we can’t afford to be picky.\"  \n\"Spare me...\""
+
+        },
+        {
+            "name":"Redemption",
+            "mana_cost":2,
+            "description":"End the cooldown of the card that have the highest cooldown. According to the cooldown remain, increase the cooldown of this card for 1 time. Restore mana to full.",
+            "type":"Effect",
+            "rarity":"Rare",
+            "cooldown":16,
+            "image_path":"GUI/BattlePage/Afallen.jpg",
+            "backstory":"A golden-haired girl dances in the snow, trembling under the biting wind. Yet her movements remain elegant, flowing with the distant melody. From afar, Cheryl watches her—the girl’s grace mirrors someone he once knew. For the first time in ages, his heart stirs again. Clutching his pocket watch, he whispers to himself: this time, he’ll be selfish."
         }
     ]
 }

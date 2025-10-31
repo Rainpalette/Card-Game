@@ -147,9 +147,21 @@ class BattleStage:
     def check_card_cooldown(self, card):
         return card.current_cooldown < 0
 
-    def play_card(self, card, additional_attack=False):
+    def play_card(self, card, additional_attack=False, deck=DeckStage()):
         if additional_attack:
             card.additional_action(self.battle)
+            return
+        if card.effect_on_card and not card.effect_on_battle_content:
+            card.use_card(deck)
+            self.player.mana -= card.mana_cost
+            card.cooldown_card()
+            # for card in deck.current_deck:
+            #     print(f"Card: {card.name}, Cooldown: {card.current_cooldown}")
+            return
+        if card.effect_on_card and card.effect_on_battle_content:
+            card.use_card(self.battle,deck)
+            self.player.mana -= card.mana_cost
+            card.cooldown_card()
             return
         card.use_card(self.battle)
         self.player.mana -= card.mana_cost
