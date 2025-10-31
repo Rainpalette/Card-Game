@@ -12,7 +12,10 @@ class CardEffect:
             battle.mob.health += damage_dealt
             battle.mob.shield = 0
         else:
-            battle.mob.shield -= damage + battle.player.attack - battle.mob.defense
+            final_damage = damage + battle.player.attack - battle.mob.defense
+            if final_damage < 0:
+                final_damage = 0
+            battle.mob.shield -= final_damage
 
     def deal_damage_to_player(self, damage, battle):
         damage_dealt = battle.player.shield - (damage + battle.mob.attack - battle.player.defense)

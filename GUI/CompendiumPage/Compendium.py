@@ -28,7 +28,7 @@ class CompendiumPage(QWidget):
         self.page_layout = QGridLayout(self.card_container)
         
         self.page = 1
-        self.max_page = 2
+        self.max_page = 10
         self.card_list = []
         # Set up navigation buttons
         self.next_button = QPushButton(">")  # Changed to arrow symbol
@@ -79,7 +79,11 @@ class CompendiumPage(QWidget):
                 "name": card["name"],
                 "description": card["description"],
                 "mana_cost": card["mana_cost"],
-                "cooldown": card["cooldown"]
+                "cooldown": card["cooldown"],
+                "type": card["type"],
+                "rarity": card["rarity"],
+                "image_path": card["image_path"],
+                "backstory": card["backstory"]
             }
             self.card_info_list.append(card_info)
 
@@ -129,10 +133,22 @@ class CompendiumPage(QWidget):
            
         card_count = 0
         for i in range(8):
-            self.card_list[card_count].name = self.cards_info['cards'][current_index+card_count]['name']
-            self.card_list[card_count].image_path = "GUI/BattlePage/Afallen.jpg"
-            self.card_list[card_count].refresh_card()
+            if current_index+card_count < len(self.cards_info['cards']):
+                self.card_list[card_count].name = self.cards_info['cards'][current_index+card_count]['name']
+                self.card_list[card_count].image_path = "GUI/BattlePage/Afallen.jpg"
+                self.card_list[card_count].leftClicked.connect(self.on_card_left_clicked)
+                # self.card_list[card_count].rightClicked.connect(self.on_card_right_clicked)
+                self.card_list[card_count].refresh_card()
+            else:
+                # self.card_list[card_count].name = ""
+                # self.card_list[card_count].image_path = ""
+                # self.card_list[card_count].refresh_card()
+                self.card_list[card_count].clear_card()
             card_count+=1
+            # self.card_list[card_count].name = self.cards_info['cards'][current_index+card_count]['name']
+            # self.card_list[card_count].image_path = "GUI/BattlePage/Afallen.jpg"
+            # self.card_list[card_count].refresh_card()
+            # card_count+=1
 
     # def on_card_right_clicked(self, name):
     #     pass
