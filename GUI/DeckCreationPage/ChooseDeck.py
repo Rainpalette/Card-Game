@@ -15,7 +15,20 @@ class DeckButton(QPushButton):
         self.deck_id = 0
         self.name = f"Deck {self.deck_id}"
         self.setMinimumSize(250, 170)
-        self.setStyleSheet("font-size: 20px;")
+        # self.setStyleSheet("font-size: 20px;")
+        self.setStyleSheet("""
+            QPushButton {
+                font-size: 35px;
+                border-image: url(buttonimage.jpg) 0 0 0 0 stretch stretch;
+                color: white;
+                border: none;
+            }
+            QPushButton:hover {
+                border-image: url(buttonimage.jpg) 0 0 0 0 stretch stretch;
+                background-color: rgba(255, 255, 255, 30);
+                color:#536d82
+            }
+        """)
         self.setText(self.name)
 
     def change_text(self, new_text):
@@ -136,6 +149,7 @@ class CardDeckInformation(QWidget):
                 border: 2px solid #ccc;
                 border-radius: 10px;
                 background-color: white;
+                color:white;
             }
             QLineEdit:focus {
                 border-color: #a0a0a0;

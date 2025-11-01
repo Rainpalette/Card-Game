@@ -30,6 +30,66 @@ class MobSkillSet:
     # def shield(self, mob, shield):
     #     mob.shield += shield
 
+class Tribunal(BossSkillSetting):
+    def __init__(self, battle_content):
+        super().__init__("Tribunal", 2, "Give player 5 stacks of Void. Gain 5 stacks of shield, increase max health by 3, then recover 3 health. Clear one negative effect. If there's no Judgement effect on the field, apply Judgement.\nJudgement: At the end of the round, deal damage to both enemy and player according to the number of negative effects they have.", battle_content)
+    
+    def skill_effect(self):
+        self.battle.player.add_effect(Void(5))
+        # effect.apply_effect(Void(5), self.battle)
+        self.battle.mob.shield += 5
+        self.battle.mob.max_health += 3
+        self.battle.mob.health += 3
+        self.battle.mob.mana -= self.mana_cost
+        if not self.battle.field_effects:
+            self.battle.field_effects.append(Judgement())
+
+class Rebuttal(BossSkillSetting):
+    def __init__(self, battle_content):
+        super().__init__("Rebuttal", 3, "Deal damage to the player equal to the number of Void that player has, this damage ignore shield. Clear all the shield gained on Radiel. If Radiel does not have shield, take 3 damage, then clear 3 stacks of Void on player.", battle_content)
+    
+    def skill_effect(self):
+        for effect in self.battle.player.get_effects():
+            if effect.name == "Void":
+                void_stack = effect.stack
+                effect.deal_damage_ignore_sield_ignore_shield(void_stack, self.battle)
+                break
+        if self.battle.mob.shield >0:
+            self.battle.mob.shield =0
+        else:
+            self.battle.mob.health -=3
+            for effect in self.battle.player.get_effects():
+                if effect.name == "Void":
+                    effect.stack -=3
+                    if effect.stack <=0:
+                        self.battle.player.remove_effect(effect)
+                    break
+        self.battle.mob.mana -= self.mana_cost
+
+class Mockery_Juggle(BossSkillSetting):
+    def __init__(self, battle_content):
+        super().__init__("Mockery: Juggle", 2, "Give player 3 stacks of Void. Clear all the shield on player, deal 5 damage to player, then give 5 shield to player, gain Radiel 5 shield.", battle_content)
+    
+    def skill_effect(self):
+        self.battle.player.add_effect(Void(3))
+        self.battle.player.shield = 0
+        effect.deal_damage_to_player(5, self.battle)
+        self.battle.player.shield += 5
+        self.battle.mob.shield += 5
+        self.battle.mob.mana -= self.mana_cost
+
+class Mockery_ExcessGrace(BossSkillSetting):
+    def __init__(self, battle_content):
+        super().__init__("Mockery: Excess Grace", 2, "Give player 3 stacks of Void. If player has shield, clear all the shield on player, then deal damage to player equal to the amount of shield cleared.", battle_content)
+    
+    def skill_effect(self):
+        self.battle.player.add_effect(Void(3))
+        damage = self.battle.player.shield
+        self.battle.player.shield = 0
+        effect.deal_damage_to_player(damage, self.battle)
+        
+        self.battle.mob.mana -= self.mana_cost
+
 
 class RadielSkillSet:
     def __init__(self, battle):
@@ -57,6 +117,7 @@ class RadielSkillSet:
         # Uses mana: 2
         self.battle.mob.mana -= 2
         self.battle.mob.shield += 10
+
 
 class crownAttack(BossSkillSetting):
     def __init__(self,battle_content):

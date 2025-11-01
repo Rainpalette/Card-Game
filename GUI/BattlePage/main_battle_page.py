@@ -260,7 +260,22 @@ class BattleBoard(QWidget):
         #Add Round End button into the widget
         self.player_end_button = QPushButton("Round End")
         self.player_end_button.setFixedSize(200,200)
-        self.player_end_button.setStyleSheet("font-size:30px;")
+        # self.player_end_button.setStyleSheet("font-size:30px;")
+        self.player_end_button.setStyleSheet("""
+            QPushButton {
+                font-size: 30px;
+                border-radius: 10px;
+                border: 3px solid black;
+                border-image: url(buttonimage.jpg) 0 0 0 0 stretch stretch;
+                color: white;
+                border: none;
+            }
+            QPushButton:hover {
+                border-image: url(buttonimage.jpg) 0 0 0 0 stretch stretch;
+                background-color: rgba(255, 255, 255, 30);
+                color:#536d82
+            }
+        """)
         self.player_end_button.clicked.connect(self.on_click_end_button)
         self.main_layout.addWidget(self.player_end_button, 1, 2, alignment=Qt.AlignCenter)
        
@@ -405,6 +420,9 @@ class ChooseEnemyProfile(QWidget):
         self.main_layout.addWidget(self.profile_label)
         self.main_layout.addWidget(self.profile_image)
         self.setLayout(self.main_layout)
+
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)   # 创建应用实例

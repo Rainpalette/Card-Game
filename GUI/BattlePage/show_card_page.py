@@ -153,7 +153,7 @@ class CardGridWindow(QWidget):
         grid.addWidget(exit_button,0,0)
         
         card_count = 0
-        for row in range(3):
+        for row in range(2):
             for col in range(4):
                 if card_count<8:
                     card = Card(self.deck.get_card_name(card_count), self.deck.get_card_image(card_count))
@@ -167,15 +167,16 @@ class CardGridWindow(QWidget):
                     self.card_gallery.append(card)
                     card_count +=1
                 else:
-                    card = Card("name", "GUI/BattlePage/Afallen.jpg")
-                    card.id = card_count+1
-                    card.rightClicked.connect(self.on_card_clicked)
-                    grid.addWidget(card, row+1, col+1)
-                    card_count +=1
+                    # card = Card("name", "GUI/BattlePage/Afallen.jpg")
+                    # card.id = card_count+1
+                    # card.rightClicked.connect(self.on_card_clicked)
+                    # grid.addWidget(card, row+1, col+1)
+                    # card_count +=1
+                    pass
 
         
-        grid.setRowStretch(0,1)
-        grid.setRowStretch(4,1)
+        grid.setRowStretch(1,1)
+        # grid.setRowStretch(4,1)
 
         #grid.setColumnStretch(0,1)
         #grid.setColumnStretch(5,1)
@@ -222,19 +223,24 @@ class CardDetailPage(QWidget):
     change_to_page = pyqtSignal(int)
     def __init__(self,name="", description=""):
         super().__init__()
+        self.setAutoFillBackground(True)
         self.name = name
+        # self.setFixedSize(300,400)
         self.description = description
         self.card_name = QLabel(self.name)
         self.card_name.setStyleSheet("font-size:30px;")
         #self.card_name.setFixedSize(100,50)
-
+        self.image_path = "GUI/BattlePage/Afallen.jpg"
         self.card_image = QLabel()
-        pixmap = QPixmap("GUI/BattlePage/Afallen.jpg")
+        pixmap = QPixmap(self.image_path)
         self.card_image.setPixmap(pixmap)
-        self.card_image.setFixedSize(250,300)
+        self.card_image.setFixedSize(220,235)
+        self.card_image.setScaledContents(True)
 
         self.card = QWidget()
-        self.card.setStyleSheet("background-color: #C19A6B;")
+        self.card.setStyleSheet("""background-color: #b3bfcb;
+                                border-radius: 8px;
+                                border: 3px solid black;""")
         card_layout = QVBoxLayout()
         card_layout.addWidget(self.card_name)
         card_layout.addWidget(self.card_image)
@@ -273,13 +279,34 @@ class CardDetailPage(QWidget):
     def refresh_page(self):
         self.card_name.setText(self.name)
         self.card_description.setPlainText(self.description)
+        self.pixmap = QPixmap(self.image_path)
+        self.card_image.setPixmap(self.pixmap)
 
 
 
+class ShowCardUsing(QWidget):
+    def __init__(self):
+        super().__init__()
+        # self.deck = deck
+        self.card = Card()
+        self.main_layout = QVBoxLayout(self)
+        # self.card_label = QLabel("Card Deck")
+        # self.main_layout.addWidget(self.card_label)
+        self.setLayout(self.main_layout)
 
+        self.card = Card("test","GUI/BattlePage/Afallen.jpg")
+        try:
+            self.card.disconnect()
+        except Exception as e:
+            print(f"Error disconnecting card: {e}")
 
+        self.card.setFixedSize(200, 250)
+        self.main_layout.addWidget(self.card)
 
-    
+    def update_card(self, name, image_path):
+        self.card.name = name
+        self.card.image_path = image_path
+        self.card.refresh_card()
 
 if __name__ == "__main__":
     import sys

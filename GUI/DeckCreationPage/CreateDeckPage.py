@@ -45,26 +45,26 @@ class CardInDeck(Card):
         self.pixmap = QPixmap(self.image_path).scaled(150,350,Qt.KeepAspectRatio)
         self.card_image.setPixmap(self.pixmap)
         if not self.name=="":
-            self.card.setStyleSheet("background-color: #C19A6B;")
+            self.card.setStyleSheet("background-color: #b3bfcb;")
             self.card.setStyleSheet("""
                 QWidget{
                     border-radius: 8px;
-                    border: 2px solid #8b5a2b;
-                    font-size:13px;
+                    border: 2px solid #000000;
+                    font-size:20px;
                                     }""")
             self.setStyleSheet("""
                 QWidget {
-                    background-color: #caa472;
+                    background-color: #b3bfcb;
                     
                 }
                 QWidget:hover {
-                    background-color: #d4b483;
+                    background-color: #d5dbe2;
                     
                 }
             """)
         else:
-            self.setStyleSheet("background-color: #C19A6B;")
-            self.card.setStyleSheet("background-color: #C19A6B;")
+            self.setStyleSheet("background-color: #b3bfcb;")
+            self.card.setStyleSheet("background-color: #b3bfcb;")
             self.card_image.clear()
             self.card_name.setText("")
 
@@ -78,24 +78,28 @@ class CardShowcase(Card):
         self.image_path = image_path
         self.setFixedSize(140, 175)
         self.card.setStyleSheet("background-color: #C19A6B;")
+        #8b5a2b
+        #caa472;
+        #d4b483;
         self.card.setStyleSheet("""
             QWidget{
                 border-radius: 8px;
-                border: 2px solid #8b5a2b;
+                border: 2px solid #000000;
                 font-size:13px;
                                 }""")
         self.setStyleSheet("""
             QWidget {
-                background-color: #caa472;
+                background-color: #b3bfcb;
                 
             }
             QWidget:hover {
-                background-color: #d4b483;
+                background-color: #d5dbe2;
                 
             }
         """)
         if self.name=="":
-            self.setStyleSheet("background-color: #C19A6B;")
+            #C19A6B
+            self.setStyleSheet("background-color:#C19A6B;")
             self.card.setStyleSheet("background-color: #C19A6B;")
             self.card_image.clear()
             # self.disconnect()
@@ -111,21 +115,21 @@ class CardShowcase(Card):
         self.pixmap = QPixmap(self.image_path).scaled(150,350,Qt.KeepAspectRatio)
         self.card_image.setPixmap(self.pixmap)
         if not self.name=="":
-            self.card.setStyleSheet("background-color: #C19A6B;")
+            self.card.setStyleSheet("background-color: #b3bfcb;")
             self.card.setStyleSheet("""
                 QWidget{
                     border-radius: 8px;
-                    border: 2px solid #8b5a2b;
+                    border: 2px solid #000000;
                     font-size:13px;
                                     }""")
             self.setStyleSheet("""
                 QWidget {
-                    background-color: #caa472;
+                    background-color: #b3bfcb;
                     
                 }
                 QWidget:hover {
-                    background-color: #d4b483;
-                    
+                    background-color: #d5dbe2;
+
                 }
             """)
         else:
@@ -241,7 +245,7 @@ class CreateDeckPage(QWidget):
         for row in range(1,3):
             for col in range(4):
                 if card_count<8:
-                    card = CardInDeck(self.cards_info['cards'][card_count]['name'], "GUI/BattlePage/Afallen.jpg")
+                    card = CardInDeck(self.cards_info['cards'][card_count]['name'], self.cards_info['cards'][card_count]['image_path'])
                     card.id = card_count+1
                     card.leftClicked.connect(self.on_card_left_clicked)
                     card.rightClicked.connect(self.on_card_right_clicked)
@@ -301,7 +305,8 @@ class CreateDeckPage(QWidget):
         for i in range(8):
             if current_index+card_count < len(self.cards_info['cards']):
                 self.card_list[card_count].name = self.cards_info['cards'][current_index+card_count]['name']
-                self.card_list[card_count].image_path = "GUI/BattlePage/Afallen.jpg"
+                self.card_list[card_count].image_path = self.cards_info['cards'][current_index+card_count]['image_path']
+                # self.card_list[card_count].image_path = "GUI/BattlePage/Afallen.jpg"
                 self.card_list[card_count].leftClicked.connect(self.on_card_left_clicked)
                 self.card_list[card_count].rightClicked.connect(self.on_card_right_clicked)
                 self.card_list[card_count].refresh_card()

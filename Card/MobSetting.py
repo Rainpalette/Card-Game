@@ -5,6 +5,7 @@ class MobSetting(ABC):
     def __init__(self, name="", health=0, mana=0):
         self.name = name
         self.health = health
+        self.max_health = health
         self.before_change_health = health
         self.mana = mana
         self.max_mana = mana

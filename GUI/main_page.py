@@ -1,7 +1,7 @@
 
-from PyQt5.QtWidgets import QApplication, QMessageBox,QMainWindow, QLabel,QPushButton, QStackedWidget
+from PyQt5.QtWidgets import QApplication,QMessageBox,QMainWindow, QLabel,QPushButton, QStackedWidget, QGraphicsOpacityEffect
 from PyQt5.QtGui import QIcon, QFont
-from PyQt5.QtCore import Qt, QTimer#for alignment
+from PyQt5.QtCore import Qt, QTimer, QSize, QPropertyAnimation #for alignment
 from PyQt5.QtGui import QPixmap,QFontDatabase#for picture
 from PyQt5.QtWidgets import (QWidget,QVBoxLayout,QHBoxLayout,QGridLayout)
 from PyQt5.QtWidgets import QCheckBox#checkbox
@@ -16,6 +16,7 @@ from DeckCreationPage.CreateDeckPage import Message_Page, CreateDeckPage, Confir
 from CompendiumPage.Compendium import CardInCompendium, CompendiumPage
 from DeckCreationPage.ChooseDeck import ChooseDeckPage, CardDeckInformation
 from Card.CardSetting import *
+from BattlePage.show_card_page import ShowCardUsing
 
 import sys
 import os
@@ -53,6 +54,7 @@ class MainWindow(QMainWindow):
         # self.bg_label.setPixmap(QPixmap("forest game scene.jpg"))
         self.bg_label.resize(self.size())
         self.icon = QIcon("Afallen.jpg")
+        
         self.setWindowIcon(self.icon)
         self.page_list=[]
         self.battle_backend = BattleStage()
@@ -89,10 +91,21 @@ class MainWindow(QMainWindow):
         self.compendium_page = CompendiumPage()
         self.choose_card_deck = ChooseDeckPage(self.deck)
         self.card_deck_setup = CardDeckInformation(self.create_deck)
-        self.test_label = QLabel(self.battle_page)
-        self.test_label.setText("Test Label")
+        self.showing_card = QWidget(self.battle_page)
+        self.showing_card.setFixedSize(400, 400)
+        self.showing_card.move(450, 230)
+        # self.showing_card.setStyleSheet("background-color: rgba(255, 255, 255, 200); border: 2px solid black;")
+        # self.test_label = QLabel(self.battle_page)
+        # self.test_label.setText("Test Label")
         self.stacked_widget = QStackedWidget()
-
+        # self.test_label.setStyleSheet("font-size: 30px; font-weight: bold; color: #344979;")
+        # self.test_label.setAlignment(Qt.AlignCenter)
+        # self.test_label.setVisible(False)
+        # self.test_label.move(650,400)
+        self.card_showing = ShowCardUsing()
+        self.showing_card.setLayout(QVBoxLayout())
+        self.showing_card.layout().addWidget(self.card_showing,alignment=Qt.AlignCenter)
+        self.showing_card.hide()
 
         count = 0
         for deck_name in self.deck.deck_list:
@@ -114,7 +127,8 @@ class MainWindow(QMainWindow):
                 "description": card["description"],
                 "mana_cost": card["mana_cost"],
                 "cooldown": card["cooldown"],
-                "backstory": card["backstory"]
+                "backstory": card["backstory"],
+                "image_path": card["image_path"]
             }
             self.card_info_list.append(card_info)
         # self.card_list =[]
@@ -175,15 +189,57 @@ class MainWindow(QMainWindow):
         self.game_start_button = QPushButton("Game Start")
 
         self.create_deck_button.setFixedSize(200,200)
-        self.create_deck_button.setStyleSheet("font-size:30px;")
+        self.create_deck_button.setStyleSheet("""
+            QPushButton {
+                border-radius: 13px;
+                border: 2px solid #000000;
+                font-size: 30px;
+                border-image: url(buttonimage.jpg) 0 0 0 0 stretch stretch;
+                color: white;
+                border: none;
+            }
+            QPushButton:hover {
+                border-image: url(buttonimage.jpg) 0 0 0 0 stretch stretch;
+                background-color: rgba(255, 255, 255, 30);
+                color:#536d82
+            }
+        """)
         # self.create_deck_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.create_deck)))
         self.create_deck_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.choose_card_deck)))
         self.compendium_button.setFixedSize(200,200)
-        self.compendium_button.setStyleSheet("font-size:30px;")
+        self.compendium_button.setStyleSheet("""
+            QPushButton {
+                border-radius: 13px;
+                border: 2px solid #000000;
+                font-size: 30px;
+                border-image: url(buttonimage.jpg) 0 0 0 0 stretch stretch;
+                color: white;
+                border: none;
+            }
+            QPushButton:hover {
+                border-image: url(buttonimage.jpg) 0 0 0 0 stretch stretch;
+                background-color: rgba(255, 255, 255, 30);
+                color:#536d82
+            }
+        """)
         self.compendium_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.compendium_page)))
         self.game_start_button.setFixedSize(410,300)
-        self.game_start_button.setStyleSheet("font-size:45px;")
-
+        # self.game_start_button.setStyleSheet("font-size:45px;")
+        self.game_start_button.setStyleSheet("""
+            QPushButton {
+                border-radius: 13px;
+                border: 2px solid #000000;
+                font-size: 45px;
+                border-image: url(buttonimage.jpg) 0 0 0 0 stretch stretch;
+                color: white;
+                border: none;
+            }
+            QPushButton:hover {
+                border-image: url(buttonimage.jpg) 0 0 0 0 stretch stretch;
+                background-color: rgba(255, 255, 255, 30);
+                color:#536d82
+            }
+        """)
         #self.game_start_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.battle_page)))
         #print(self.stacked_widget.indexOf(self.battle_page))
         self.game_start_button.clicked.connect(self.game_start)
@@ -311,6 +367,8 @@ class MainWindow(QMainWindow):
             if card_info['name'] == name:
                 self.card_detail.name=name
                 self.card_detail.description = f"mana cost: {card_info['mana_cost']}\ncooldown:{card_info['cooldown']}\n{card_info['description']}"
+                self.card_detail.image_path = card_info['image_path']
+                print(f"card_info['image_path']: {card_info['image_path']}")
                 self.card_detail.refresh_page()
                 print(f"{card_info['name']} is found")
                 self.page_list.append(self.stacked_widget.currentIndex())
@@ -324,6 +382,8 @@ class MainWindow(QMainWindow):
             if card_info['name'] == name:
                 self.card_detail.name=name
                 self.card_detail.description = f"mana cost: {card_info['mana_cost']}\ncooldown:{card_info['cooldown']}\n{card_info['description']}\n\n{card_info['backstory']}"
+                self.card_detail.image_path = card_info['image_path']
+                print(f"card_info['image_path']: {card_info['image_path']}")
                 self.card_detail.refresh_page()
                 print(f"{card_info['name']} is found")
                 self.page_list.append(self.stacked_widget.currentIndex())
@@ -346,11 +406,11 @@ class MainWindow(QMainWindow):
                 print("Card already in deck.")
                 self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.create_deck))
                 return
-            
+        image_path = found_card_info.get("image_path", "GUI/BattlePage/Afallen.jpg")
         # Prepare new card data
         new_card_data = {
             "name": name,
-            "image_path": "GUI/BattlePage/Afallen.jpg"
+            "image_path": image_path
         }
 
         # Find first empty slot or append
@@ -479,6 +539,19 @@ class MainWindow(QMainWindow):
     def change_page(self, index):
         self.stacked_widget.setCurrentIndex(index)
     
+    # def fade_out(self):
+    #     self.effect = QGraphicsOpacityEffect()
+    #     self.setGraphicsEffect(self.effect)
+    #     self.animation = QPropertyAnimation(self.effect, b"opacity")
+    #     self.animation.setDuration(1000)  # 持续时间，单位为毫秒
+    #     self.animation.setStartValue(1)  # 起始透明度
+    #     self.animation.setEndValue(0)    # 结束透明度
+    #     self.animation.start()
+
+    # def game_start_animation(self):
+    #     self.fade_out()
+    #     QTimer.singleShot(1000, self.game_start)
+
     def game_start(self):
         self.show_card_page.refresh_card_deck()
         self.battle_page.enemy_damage_label.hide()
@@ -571,7 +644,14 @@ class MainWindow(QMainWindow):
             return
         self.change_page(self.stacked_widget.indexOf(self.battle_page))
         # current_health = self.battle.mob.before_change_health
-        
+        self.card_showing.update_card(card.name, card.image_path)
+        self.showing_card.show()
+        QTimer.singleShot(600, lambda:self.showing_card.hide())
+        QTimer.singleShot(1000, lambda:self.continue_play_card(index))
+
+    def continue_play_card(self, index):
+        card_index = index-1
+        card = self.deck.current_deck[card_index]
         self.battle_backend.play_card(card,False,self.deck)
         self.battle_page.update_status(self.deck.current_deck,self.show_card_page)
         if not card.type =="Attack":

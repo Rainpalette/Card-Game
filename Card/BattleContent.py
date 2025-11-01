@@ -13,3 +13,4 @@ class BattleContent:
     def __init__(self, mob=clearMob(), player=PlayerSetting()):
         self.mob = mob
         self.player = player
+        self.field_effects = []

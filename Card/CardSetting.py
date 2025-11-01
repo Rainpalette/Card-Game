@@ -56,7 +56,8 @@ class Heal(CardSetting):
             description="Restore 3 HP to yourself.",
             card_type="Heal",
             rarity="Common",
-            cooldown=2
+            cooldown=2,
+            image_path="Card/CardIcon/heal.png"
         )
 
     def use_card(self, battle):
@@ -71,7 +72,8 @@ class Defense(CardSetting):
             description="Gain 3 shield stacks.",
             card_type="Defense",
             rarity="Common",
-            cooldown=2
+            cooldown=2,
+            image_path="Card/CardIcon/shield.png"
         )
 
     def use_card(self, battle):
@@ -136,7 +138,8 @@ class CriticalStrike(CardSetting):
             description="Deal 8 damage to the enemy.",
             card_type="Attack",
             rarity="Common",
-            cooldown=5
+            cooldown=5,
+            image_path="Card/CardIcon/Axe.png"
         )
 
     def use_card(self, battle):
@@ -151,7 +154,8 @@ class Trick(CardSetting):
             description="Remove the enemy's shield and deal damage equal to the shield value removed.",
             card_type="Effect",
             rarity="Common",
-            cooldown=5
+            cooldown=5,
+            image_path="Card/CardIcon/shield_broken.png"
         )
 
     def use_card(self, battle):

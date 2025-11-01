@@ -320,3 +320,52 @@ class Candy(EffectTemplate):
 
     def remove_effect(self,battle=""):
         pass
+
+class Void(EffectTemplate):
+    def __init__(self, stack):
+        super().__init__()
+        self.name = "Void"
+        self.description = "No effect. Considered as a negative effect."
+        self.duration = 1000
+        self.defaultduration = 1000
+        self.activated_times = 0
+        self.types = ["WhenHolding", "OnTurnStart", "OnTurnEnd", "OnAttack", "OnDamaged", "Passive"]
+        self.type = "WhenHolding"
+        self.effect_type = "Negative"
+        self.stack = stack
+        self.DurationByStack = True
+        self.image_path = "GUI/BattlePage/D.D.jpg"
+        # self.current_duration = self.duration
+    def apply_effect(self, battle):
+        pass
+
+    def remove_effect(self, battle=""):
+        pass
+
+class Judgement(EffectTemplate):
+    def __init__(self):
+        super().__init__()
+        self.name = "Judgement"
+        self.description = "At the end of the round, deal damage to both enemy and player according to the number of negative effects they have."
+        self.duration = 99
+        self.defaultduration = 99
+        self.activated_times = 0
+        self.types = ["WhenHolding", "OnTurnStart", "OnTurnEnd", "OnAttack", "OnDamaged", "Passive"]
+        self.type = "OnTurnEnd"
+        self.effect_type = "FieldEffect"
+        self.stack = 1
+        self.DurationByStack = False
+        self.image_path = "GUI/BattlePage/D.D.jpg"
+        # self.current_duration = self.duration
+    def apply_effect(self, battle):
+        negative_effects_player = [effect for effect in battle.player.get_effects() if effect.effect_type == "Negative"]
+        negative_effects_mob = [effect for effect in battle.mob.get_effects() if effect.effect_type == "Negative"]
+        damage_to_player = len(negative_effects_player)
+        damage_to_mob = len(negative_effects_mob)
+        card_effect = CardEffect()
+        card_effect.deal_damage_to_player(damage_to_player, battle)
+        card_effect.deal_damage(damage_to_mob, battle)
+        self.activated_times += 1
+
+    def remove_effect(self,battle=""):
+        pass

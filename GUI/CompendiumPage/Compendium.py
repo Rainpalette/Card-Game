@@ -26,7 +26,7 @@ class CompendiumPage(QWidget):
         # Create a container widget for the card grid
         self.card_container = QWidget()
         self.page_layout = QGridLayout(self.card_container)
-        
+        # self.setFixedSize(200,250)
         self.page = 1
         self.max_page = 10
         self.card_list = []
@@ -91,8 +91,9 @@ class CompendiumPage(QWidget):
         for row in range(1,3):
             for col in range(4):
                 if card_count<8:
-                    card = CardInDeck(self.cards_info['cards'][card_count]['name'], "GUI/BattlePage/Afallen.jpg")
+                    card = CardInDeck(self.cards_info['cards'][card_count]['name'], self.cards_info['cards'][card_count]['image_path'])
                     card.id = card_count+1
+                    card.card_image.setScaledContents(True)
                     card.leftClicked.connect(self.on_card_left_clicked)
                     #card.rightClicked.connect(self.on_card_right_clicked)
                     # card.clicked.connect(self.on_card_left_clicked)
@@ -135,7 +136,7 @@ class CompendiumPage(QWidget):
         for i in range(8):
             if current_index+card_count < len(self.cards_info['cards']):
                 self.card_list[card_count].name = self.cards_info['cards'][current_index+card_count]['name']
-                self.card_list[card_count].image_path = "GUI/BattlePage/Afallen.jpg"
+                self.card_list[card_count].image_path = self.cards_info['cards'][current_index+card_count]['image_path']
                 self.card_list[card_count].leftClicked.connect(self.on_card_left_clicked)
                 # self.card_list[card_count].rightClicked.connect(self.on_card_right_clicked)
                 self.card_list[card_count].refresh_card()
