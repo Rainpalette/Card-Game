@@ -244,7 +244,7 @@ class MistBlade(CardSetting):
             description="Deal 1 damage. Clear all Mist stacks on enemy, then increase this card's additional attack by the number of Mist stacks cleared.",
             card_type="Attack",
             rarity="Rare",
-            cooldown=3
+            cooldown=2
         )
         self.additional_damage = 0
         self.activated_times = 0

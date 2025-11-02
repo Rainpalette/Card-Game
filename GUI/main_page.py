@@ -33,25 +33,14 @@ pygame.mixer.init()
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Card Game")
+        self.setWindowTitle("Sanctuary of Dreams")
         self.resize(1310,850)
         self.center()
-        # self.bg_images=["4k Wallpaper For Your Phone, Desktop Tablet _ (1).jpg"]
-        # self.setStyleSheet(f"""
-        #     QMainWindow {{
-        #         background-image: url({self.bg_images[0]});
-        #         background-repeat: no-repeat;
-        #         background-position: center;
-        #         background-size: cover;
-        #     }}
-        # """)
+        
         self.bg_label = QLabel(self)
-        self.bg_label.setScaledContents(True)  # 自动缩放图片
+        self.bg_label.setScaledContents(True)
         self.bg_label.setPixmap(QPixmap("hall.jpg"))
-        # self.bg_label.setPixmap(QPixmap("4k Wallpaper For Your Phone, Desktop Tablet _ (1).jpg"))
-        # self.bg_label.setPixmap(QPixmap("background.jpg"))
-        # self.bg_label.setPixmap(QPixmap("Beautiful and Aesthetic Desktop Wallpapers.jpg"))
-        # self.bg_label.setPixmap(QPixmap("forest game scene.jpg"))
+     
         self.bg_label.resize(self.size())
         self.icon = QIcon("Afallen.jpg")
         
@@ -83,7 +72,7 @@ class MainWindow(QMainWindow):
         self.battle_page = BattleBoard(self.battle)
         self.show_card_page = CardGridWindow(self.deck)
         self.enemy_page = EnemyPage(self.battle)
-        self.text_label = QLabel("Card Game", self)
+        self.text_label = QLabel("Sanctuary of\nDreams", self)
         self.create_deck = CreateDeckPage()
         self.create_confirmation = ConfirmationPage()
         self.card_in_deck = CardInDeck()
@@ -91,9 +80,7 @@ class MainWindow(QMainWindow):
         self.compendium_page = CompendiumPage()
         self.choose_card_deck = ChooseDeckPage(self.deck)
         self.card_deck_setup = CardDeckInformation(self.create_deck)
-        self.showing_card = QWidget(self.battle_page)
-        self.showing_card.setFixedSize(400, 400)
-        self.showing_card.move(450, 230)
+        
         # self.showing_card.setStyleSheet("background-color: rgba(255, 255, 255, 200); border: 2px solid black;")
         # self.test_label = QLabel(self.battle_page)
         # self.test_label.setText("Test Label")
@@ -102,6 +89,9 @@ class MainWindow(QMainWindow):
         # self.test_label.setAlignment(Qt.AlignCenter)
         # self.test_label.setVisible(False)
         # self.test_label.move(650,400)
+        self.showing_card = QWidget(self.battle_page)
+        self.showing_card.setFixedSize(400, 400)
+        self.showing_card.move(450, 230)
         self.card_showing = ShowCardUsing()
         self.showing_card.setLayout(QVBoxLayout())
         self.showing_card.layout().addWidget(self.card_showing,alignment=Qt.AlignCenter)
@@ -124,6 +114,7 @@ class MainWindow(QMainWindow):
         for card in cards["cards"]:
             card_info = {
                 "name": card["name"],
+                "type": card["type"],
                 "description": card["description"],
                 "mana_cost": card["mana_cost"],
                 "cooldown": card["cooldown"],
@@ -176,7 +167,7 @@ class MainWindow(QMainWindow):
         #left part
         self.vbox_left = QVBoxLayout()
         self.vbox_left.addWidget(self.text_label)
-        self.text_label.setStyleSheet("font-size: 60px; font-weight: bold;")
+        self.text_label.setStyleSheet("font-size: 60px; font-weight: bold;color: white;")
         #self.vbox_left.addStretch(1)
         self.text_label.setAlignment(Qt.AlignCenter)
         #self.vbox_left.addStretch(1)
@@ -366,7 +357,7 @@ class MainWindow(QMainWindow):
             print(f"{card_info['name']} over here")
             if card_info['name'] == name:
                 self.card_detail.name=name
-                self.card_detail.description = f"mana cost: {card_info['mana_cost']}\ncooldown:{card_info['cooldown']}\n{card_info['description']}"
+                self.card_detail.description = f"card type: {card_info['type']}\nmana cost: {card_info['mana_cost']}\ncooldown:{card_info['cooldown']}\n{card_info['description']}"
                 self.card_detail.image_path = card_info['image_path']
                 print(f"card_info['image_path']: {card_info['image_path']}")
                 self.card_detail.refresh_page()
@@ -512,10 +503,14 @@ class MainWindow(QMainWindow):
                 deck['cards'] = deck_data['cards']
                 break
             
-        else:
-            self.deck.deck_list.append(deck_data)
+        
+        self.deck.deck_list.append(deck_data)
         print("Deck saved:", deck_data)
         print(self.deck.deck_list)
+        if self.deck.current_deck_name == deck_data['deck_name']:
+            self.deck.current_deck = deck_data['cards']
+            self.show_card_page.deck = self.deck
+            self.show_card_page.refresh_card_deck()
         self.save_card_deck_to_json()
         
     

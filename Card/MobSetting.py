@@ -45,7 +45,7 @@ class MobSetting(ABC):
 class crown(MobSetting):
     #crownSkill = crownSkillSet()
     def __init__(self, battle):
-        super().__init__("Crown", 35, 5)
+        super().__init__("Crown", 100, 5)
         self.battle = battle
         self.crownSkill = None
     

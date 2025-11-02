@@ -137,7 +137,7 @@ class CardDeckInformation(QWidget):
         # Deck name input layout
         self.name_layout = QHBoxLayout()
         self.deck_name_label = QLabel("Deck Name:")
-        self.deck_name_label.setStyleSheet("font-size: 18px; font-weight: bold;")
+        self.deck_name_label.setStyleSheet("font-size: 18px; font-weight: bold;color:white;")
         self.name_layout.addWidget(self.deck_name_label)
         
         self.deck_name = QLineEdit()
@@ -149,7 +149,7 @@ class CardDeckInformation(QWidget):
                 border: 2px solid #ccc;
                 border-radius: 10px;
                 background-color: white;
-                color:white;
+
             }
             QLineEdit:focus {
                 border-color: #a0a0a0;

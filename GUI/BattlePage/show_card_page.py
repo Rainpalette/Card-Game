@@ -14,16 +14,7 @@ class Card(QWidget):
     def __init__(self, name="", image_path=""):
         super().__init__()
         self.setAutoFillBackground(True)
-        # self.setText(name)
         layout = QVBoxLayout()
-        # card_icon = QIcon(image_path)
-        # self.setIcon(card_icon)
-        # layout.addWidget(self.setText(name))
-        # layout.addWidget(card_icon)
-        # self.setLayout(layout)
-        self.opacity_effect = QGraphicsOpacityEffect()
-        self.opacity_effect.setOpacity(1.0)
-        self.setGraphicsEffect(self.opacity_effect)
         self.name = name
         self.image_path = image_path
         self.pixmap = QPixmap(self.image_path).scaled(150,350,Qt.KeepAspectRatio)
@@ -31,8 +22,6 @@ class Card(QWidget):
         self.card_name.setAlignment(Qt.AlignCenter)
         self.card_image = QLabel()
         self.card_image.setPixmap(self.pixmap)
-        
-        
         self.card_image.setAlignment(Qt.AlignCenter)
         self.id =0
         self.setFixedSize(200,250)
@@ -72,16 +61,16 @@ class Card(QWidget):
                 
             }
         """)
-        
+        #E0C58F
         self.card_cooldown_reminder = QLabel("5", self)
         self.card_cooldown_reminder.setStyleSheet("""
             QLabel {
-                font-size: 70px;
+                font-size: 150px;
                 color: #E0C58F;
                 background-color: transparent;
             }
         """)
-        self.card_cooldown_reminder.move(40,50)
+        self.card_cooldown_reminder.move(80,90)
         self.card_cooldown_reminder.setFixedSize(70,70)
         
         self.card_cooldown_reminder.hide()
@@ -98,18 +87,45 @@ class Card(QWidget):
     def in_cooldown(self,current_cooldown=5):
         #self.setWindowOpacity(0.5)
         # self.setGraphicsEffect(QGraphicsOpacityEffect(opacity=0.5))
-        self.opacity_effect.setOpacity(0.5)
+        #the correct one
+        # self.opacity_effect.setOpacity(0.5)
         # self.label_effect.setOpacity(1.0)
-
+        self.setStyleSheet("""
+            QWidget {
+                background-color: #C19A6B;
+                
+            }
+            QWidget:hover {
+                background-color: #C19A6B;
+                
+            }
+        """)
         # self.card_cooldown_reminder.setText(str(current_cooldown))
         # self.card_cooldown_reminder.setGraphicsEffect(QGraphicsOpacityEffect(opacity=2.0))
         # self.card_cooldown_reminder.show()
+        self.card_cooldown_reminder.setStyleSheet("""
+            QLabel {
+                font-size: 70px;
+                color: #FF0000;
+                background-color: transparent;
+            }
+        """)
         self.card_cooldown_reminder.setText(str(current_cooldown))
         # self.card_cooldown_reminder.raise_()
         self.card_cooldown_reminder.show()
     
     def cooldown_end(self):
-        self.opacity_effect.setOpacity(1.0)
+        # self.opacity_effect.setOpacity(1.0)
+        self.setStyleSheet("""
+            QWidget {
+                background-color: #b3bfcb;
+                
+            }
+            QWidget:hover {
+                background-color: #d5dbe2;
+                
+            }
+        """)
         self.card_cooldown_reminder.hide()
 
     def refresh_card(self):
@@ -223,12 +239,12 @@ class CardDetailPage(QWidget):
     change_to_page = pyqtSignal(int)
     def __init__(self,name="", description=""):
         super().__init__()
-        self.setAutoFillBackground(True)
+        # self.setAutoFillBackground(True)
         self.name = name
         # self.setFixedSize(300,400)
         self.description = description
         self.card_name = QLabel(self.name)
-        self.card_name.setStyleSheet("font-size:30px;")
+        self.card_name.setStyleSheet("font-size:23px;")
         #self.card_name.setFixedSize(100,50)
         self.image_path = "GUI/BattlePage/Afallen.jpg"
         self.card_image = QLabel()
@@ -240,7 +256,7 @@ class CardDetailPage(QWidget):
         self.card = QWidget()
         self.card.setStyleSheet("""background-color: #b3bfcb;
                                 border-radius: 8px;
-                                border: 3px solid black;""")
+                                border: 2px solid black;""")
         card_layout = QVBoxLayout()
         card_layout.addWidget(self.card_name)
         card_layout.addWidget(self.card_image)
@@ -293,7 +309,7 @@ class ShowCardUsing(QWidget):
         # self.card_label = QLabel("Card Deck")
         # self.main_layout.addWidget(self.card_label)
         self.setLayout(self.main_layout)
-
+    
         self.card = Card("test","GUI/BattlePage/Afallen.jpg")
         try:
             self.card.disconnect()

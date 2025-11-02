@@ -43,10 +43,49 @@
         "cards": [
             "Mist Blade",
             "Mist Hunt",
-            "Midnight Hour",
+            "Defense",
             "Deep Mist",
             "Mist Veil",
-            "Critical Strike",
+            "Candy Bullet",
+            "Ruined Forge",
+            "Shadow of the Mist"
+        ]
+    },
+    {
+        "deck_name": "Hollow Knight",
+        "cards": [
+            "Mist Blade",
+            "Mist Hunt",
+            "Defense",
+            "Deep Mist",
+            "Mist Veil",
+            "Candy Bullet",
+            "Ruined Forge",
+            "Shadow of the Mist"
+        ]
+    },
+    {
+        "deck_name": "Hollow Knight",
+        "cards": [
+            "Mist Blade",
+            "Mist Hunt",
+            "Sweet Solace",
+            "Deep Mist",
+            "Mist Veil",
+            "Candy Bullet",
+            "Ruined Forge",
+            "Shadow of the Mist"
+        ]
+    },
+    {
+        "deck_name": "Hollow Knight",
+        "cards": [
+            "Mist Blade",
+            "Mist Hunt",
+            "Defense",
+            "Deep Mist",
+            "Mist Veil",
+            "Candy Bullet",
             "Ruined Forge",
             "Shadow of the Mist"
         ]
