@@ -1,1 +1,2 @@
-# Conflict Test B
+# Conflict Test A
+
