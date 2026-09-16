@@ -23,6 +23,8 @@ class Card(QWidget):
         self.card_image = QLabel()
         self.card_image.setPixmap(self.pixmap)
         self.card_image.setAlignment(Qt.AlignCenter)
+        # self.card_image.setFixedSize(150,165)
+        # self.card_image.setScaledContents(True)
         self.id =0
         self.setFixedSize(200,250)
         self.card = QWidget()
@@ -159,14 +161,21 @@ class CardGridWindow(QWidget):
     send_name = pyqtSignal(str)
     def __init__(self,deck):
         super().__init__()
-        #self.setWindowTitle("Card Grid Layout")
-        self.card_gallery =[]
-        grid = QGridLayout(self)
+        self.card_gallery = []
         self.deck = deck
+    
+        
+        # Create main layout as grid
+        self.main_layout = QGridLayout(self)
+        
+        # Create a container widget for the card grid
+        self.card_container = QWidget()
+        self.grid_layout = QGridLayout(self.card_container)
+        
+        # Add exit button
         exit_button = QPushButton("Back")
         exit_button.setFixedSize(50,50)
         exit_button.clicked.connect(self.on_click_exit_deck)
-        grid.addWidget(exit_button,0,0)
         
         card_count = 0
         for row in range(2):
@@ -177,21 +186,23 @@ class CardGridWindow(QWidget):
                     card.rightClicked.connect(self.on_card_clicked)
                     if not self.deck.current_deck[card_count].type == "Passive":
                         card.leftClicked.connect(self.use_card)
-                    # print(f"Connecting left click for card: {self.deck.get_card_name(card_count)}")
-                    # print(f"Card type: {self.deck.current_deck[card_count].type}")
-                    grid.addWidget(card, row+1, col+1)
+                    self.grid_layout.addWidget(card, row+1, col)
                     self.card_gallery.append(card)
                     card_count +=1
-                else:
-                    # card = Card("name", "GUI/BattlePage/Afallen.jpg")
-                    # card.id = card_count+1
-                    # card.rightClicked.connect(self.on_card_clicked)
-                    # grid.addWidget(card, row+1, col+1)
-                    # card_count +=1
-                    pass
 
+        # Add exit button to top-left corner
+        self.main_layout.addWidget(exit_button, 0, 0, Qt.AlignTop | Qt.AlignLeft)
         
-        grid.setRowStretch(1,1)
+        # Add card container to center
+        self.main_layout.addWidget(self.card_container, 1, 1)
+        
+        # Add stretches to create margins and center the content
+        self.main_layout.setColumnStretch(0, 1)  # Left margin
+        self.main_layout.setColumnStretch(1, 10)  # Center column
+        self.main_layout.setColumnStretch(2, 1)  # Right margin
+        self.main_layout.setRowStretch(0, 1)  # Top margin
+        self.main_layout.setRowStretch(1, 10)  # Center row
+        self.main_layout.setRowStretch(2, 1)  # Bottom margin
         # grid.setRowStretch(4,1)
 
         #grid.setColumnStretch(0,1)
@@ -217,6 +228,13 @@ class CardGridWindow(QWidget):
                     print(f"Disconnected left click for card: {card.name}")
                 except Exception as e:
                     print(f"Error disconnecting leftClicked for card {card.name}: {e}")
+            else:
+                try:
+                    self.card_gallery[count].leftClicked.disconnect()
+                    
+                except Exception as e:
+                    print(f"{e}")
+                self.card_gallery[count].leftClicked.connect(self.use_card)
             self.card_gallery[count].name = card.name
             self.card_gallery[count].image_path = card.image_path
             self.card_gallery[count].refresh_card()
@@ -317,6 +335,11 @@ class ShowCardUsing(QWidget):
             print(f"Error disconnecting card: {e}")
 
         self.card.setFixedSize(200, 250)
+        self.setStyleSheet("""QWidget {
+                    background-color: #b3bfcb;
+                    
+                }"""
+                )
         self.main_layout.addWidget(self.card)
 
     def update_card(self, name, image_path):

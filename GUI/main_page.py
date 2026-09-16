@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QRadioButton, QButtonGroup#Radio button
 from PyQt5.QtWidgets import QLineEdit
 
 
-from BattlePage.main_battle_page import BattleBoard
+from BattlePage.main_battle_page import BattleBoard, BackToMainMenuConfirmation
 from BattlePage.show_card_page import CardGridWindow, CardDetailPage, Card
 from BattlePage.show_enemy_page import EnemyPage
 from DeckCreationPage.CreateDeckPage import Message_Page, CreateDeckPage, ConfirmationPage, CardInDeck
@@ -35,6 +35,14 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Sanctuary of Dreams")
         self.resize(1310,850)
+        self.setFixedSize(1310,850)  # This makes the window unresizable
+        
+        screen = QApplication.primaryScreen().availableGeometry()
+        # size = self.geometry()
+        # x = (screen.width() - size.width()) // 2
+        # y = (screen.height() - size.height()) // 2
+        # self.move(x, y)
+        # self.resize(screen.width(), screen.height())
         self.center()
         
         self.bg_label = QLabel(self)
@@ -80,18 +88,15 @@ class MainWindow(QMainWindow):
         self.compendium_page = CompendiumPage()
         self.choose_card_deck = ChooseDeckPage(self.deck)
         self.card_deck_setup = CardDeckInformation(self.create_deck)
+        self.cancel_battle_confirmation = BackToMainMenuConfirmation()
         
-        # self.showing_card.setStyleSheet("background-color: rgba(255, 255, 255, 200); border: 2px solid black;")
-        # self.test_label = QLabel(self.battle_page)
-        # self.test_label.setText("Test Label")
+       
         self.stacked_widget = QStackedWidget()
-        # self.test_label.setStyleSheet("font-size: 30px; font-weight: bold; color: #344979;")
-        # self.test_label.setAlignment(Qt.AlignCenter)
-        # self.test_label.setVisible(False)
-        # self.test_label.move(650,400)
+       
         self.showing_card = QWidget(self.battle_page)
         self.showing_card.setFixedSize(400, 400)
-        self.showing_card.move(450, 230)
+        
+        self.showing_card.move(450,230)
         self.card_showing = ShowCardUsing()
         self.showing_card.setLayout(QVBoxLayout())
         self.showing_card.layout().addWidget(self.card_showing,alignment=Qt.AlignCenter)
@@ -162,6 +167,7 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.choose_card_deck)#8
         self.stacked_widget.addWidget(self.card_deck_setup)#9
         self.stacked_widget.addWidget(self.message_page)#10
+        self.stacked_widget.addWidget(self.cancel_battle_confirmation)#11
         
 
         #left part
@@ -215,7 +221,7 @@ class MainWindow(QMainWindow):
         """)
         self.compendium_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.compendium_page)))
         self.game_start_button.setFixedSize(410,300)
-        # self.game_start_button.setStyleSheet("font-size:45px;")
+        
         self.game_start_button.setStyleSheet("""
             QPushButton {
                 border-radius: 13px;
@@ -231,30 +237,33 @@ class MainWindow(QMainWindow):
                 color:#536d82
             }
         """)
-        #self.game_start_button.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.battle_page)))
-        #print(self.stacked_widget.indexOf(self.battle_page))
+       
         self.game_start_button.clicked.connect(self.game_start)
 
         #13
-        self.first_row_button_layout.addWidget(self.create_deck_button)
+        self.first_row_button_layout.addWidget(self.create_deck_button,alignment=Qt.AlignRight)
         self.first_row_button_layout.addStretch(1)
-        self.first_row_button_layout.addWidget(self.compendium_button)
+        self.first_row_button_layout.addWidget(self.compendium_button,alignment=Qt.AlignLeft)
+
         
         self.button_layout.addLayout(self.first_row_button_layout)
-        self.button_layout.addWidget(self.game_start_button)
+        self.button_layout.addWidget(self.game_start_button,alignment=Qt.AlignHCenter)
+        self.button_layout.sizeConstraint()
 
         self.main_layout= QHBoxLayout()
         self.main_layout.addLayout(self.vbox_left)
         self.main_layout.addLayout(self.button_layout)
         self.main_layout.setStretch(0,2)
         self.main_layout.setStretch(1,1)
-
+       
+        
         self.central_widget.setLayout(self.main_layout)
         
         self.setCentralWidget(self.stacked_widget)
 
         self.battle_page.switch_to_page.connect(self.change_page)
         self.battle_page.end_turn.connect(self.end_turn)
+        self.battle_page.end_battle.connect(self.change_music)
         self.enemy_page.switch_to_page.connect(self.change_page)
         self.show_card_page.switch_to_page.connect(self.back_to_battle_stage)
         self.show_card_page.send_name.connect(self.set_card)
@@ -283,6 +292,9 @@ class MainWindow(QMainWindow):
         self.card_deck_setup.switch_to_page.connect(self.change_page)
         self.card_deck_setup.send_deck_name.connect(self.save_deck_name)
         self.message_page.switch_to_page.connect(self.return_previous_page)
+        self.message_page.emit_clear_message.connect(self.clear_message)
+        self.cancel_battle_confirmation.switch_to_page.connect(self.change_page)
+        self.cancel_battle_confirmation.end_battle.connect(self.change_music)
 
 
 
@@ -395,7 +407,9 @@ class MainWindow(QMainWindow):
         for data in self.create_deck.card_showcase_data_list:
             if data['name'] == name:
                 print("Card already in deck.")
-                self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.create_deck))
+                self.message_page.page = self.stacked_widget.indexOf(self.create_deck)
+                self.message_page.label.setText("Card already in deck.")
+                self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.message_page))
                 return
         image_path = found_card_info.get("image_path", "GUI/BattlePage/Afallen.jpg")
         # Prepare new card data
@@ -431,11 +445,6 @@ class MainWindow(QMainWindow):
         self.create_deck.refresh_page()
         self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.create_deck))
     
-    # def create_new_deck_page(self):
-    #     count = 0
-    #     for deck_name in self.deck.deck_list:
-    #         self.choose_card_deck.change_button_text(count , deck_name['deck_name'])
-    #         count += 1
 
     def delete_showcase_card(self,name):
         count = 0
@@ -491,20 +500,32 @@ class MainWindow(QMainWindow):
             "deck_name": dictionary.get("deck_name"),
             "cards": []
         }
+        available_deck = False
         #change the format from card name to card object
         for card_name in dictionary.get("cards"):
             for card in Card_list().card_list:
                 if card.name == card_name:
                     deck_data["cards"].append(card)
+
                     break
 
         for deck in self.deck.deck_list:
             if deck.get("deck_name") == dictionary.get("deck_name"):
+                print("Deck found, updating existing deck.")
                 deck['cards'] = deck_data['cards']
+                available_deck = True
                 break
+                # if self.deck.current_deck_name == deck_data['deck_name']:
+                #     self.deck.current_deck = deck_data['cards']
+                #     self.show_card_page.deck = self.deck
+                #     self.show_card_page.refresh_card_deck()
+                #     self.save_card_deck_to_json()
+                # return
             
-        
-        self.deck.deck_list.append(deck_data)
+        if not available_deck:
+            print("No existing deck found, adding new deck.")
+            self.deck.deck_list.append(deck_data)
+        # self.deck.deck_list.append(deck_data)
         print("Deck saved:", deck_data)
         print(self.deck.deck_list)
         if self.deck.current_deck_name == deck_data['deck_name']:
@@ -513,14 +534,6 @@ class MainWindow(QMainWindow):
             self.show_card_page.refresh_card_deck()
         self.save_card_deck_to_json()
         
-    
-    
-
-        # msg = QMessageBox()
-        # msg.setIcon(QMessageBox.Information)
-        # msg.setText("操作成功！")
-        # msg.setWindowTitle("提示")
-        # msg.exec_()
 
 
     def center(self):
@@ -534,18 +547,6 @@ class MainWindow(QMainWindow):
     def change_page(self, index):
         self.stacked_widget.setCurrentIndex(index)
     
-    # def fade_out(self):
-    #     self.effect = QGraphicsOpacityEffect()
-    #     self.setGraphicsEffect(self.effect)
-    #     self.animation = QPropertyAnimation(self.effect, b"opacity")
-    #     self.animation.setDuration(1000)  # 持续时间，单位为毫秒
-    #     self.animation.setStartValue(1)  # 起始透明度
-    #     self.animation.setEndValue(0)    # 结束透明度
-    #     self.animation.start()
-
-    # def game_start_animation(self):
-    #     self.fade_out()
-    #     QTimer.singleShot(1000, self.game_start)
 
     def game_start(self):
         self.show_card_page.refresh_card_deck()
@@ -554,6 +555,8 @@ class MainWindow(QMainWindow):
         self.stacked_widget.setCurrentIndex(self.stacked_widget.indexOf(self.battle_page))
         self.battle_backend.start_battle("crown")
         self.battle_page.reset_button()
+        self.battle.mob.health = self.battle.mob.max_health
+        self.battle.mob.effects = []
         self.battle_backend.player = self.battle_backend.player_copy
         self.battle_page.battle = self.battle_backend.battle
         self.enemy_page.battle = self.battle_backend.battle
@@ -579,6 +582,12 @@ class MainWindow(QMainWindow):
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.5)
     
+    def change_music(self):
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load(r"C:\Users\User\Downloads\CardGame\The Forgotten Girl.mp3")
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.5)
+
     def check_cooldown(self, card):
         if card.current_cooldown>0:
             return False
@@ -591,6 +600,9 @@ class MainWindow(QMainWindow):
         print("hoho")
         return True
     
+    def clear_message(self):
+        self.page_list = []
+
     def return_previous_page(self,index):
         print(f"Page list before: {self.page_list}")
         if not self.page_list:
@@ -608,6 +620,10 @@ class MainWindow(QMainWindow):
                 if effect.type == "OnDamaged":
                     print(f"Applying OnDamaged effect: {effect.name}")
                     effect.apply_effect(self.battle, self.battle.mob.before_change_health - self.battle.mob.health)
+            for card in self.deck.current_deck:
+                if card.type == "Passive" and card.activate_on_attack:
+                    print(f"Activating on attack effect for card: {card.name}")
+                    card.activate_effect(self.battle)
         self.battle_page.show_damage_on_player(self.battle_backend.calculate_damage(self.battle.player.before_change_health, self.battle.player.health))
         self.battle_page.show_damage_on_enemy(self.battle_backend.calculate_damage(self.battle.mob.before_change_health, self.battle.mob.health))
         if self.battle.mob.health<=0:
@@ -620,9 +636,7 @@ class MainWindow(QMainWindow):
             QTimer.singleShot(2000, lambda:self.battle_page.clear_skill_label())
             QTimer.singleShot(1800, lambda:self.battle_page.enemy_damage_label.hide())
             QTimer.singleShot(1800, lambda:self.battle_page.player_damage_label.hide())
-        for card in self.deck.current_deck:
-            if card.type == "Passive" and card.activate_on_attack and self.battle.mob.before_change_health > self.battle.mob.health:
-                card.activate_effect(self.battle)
+        
         self.battle_page.update_status(self.deck.current_deck,self.show_card_page)
         self.enemy_page.update_effect_status()
 
@@ -635,12 +649,17 @@ class MainWindow(QMainWindow):
             print("Already cooldown")
             return
         if not self.check_mana(card):
+            self.message_page.label.setText("Not enough mana.")
+            self.message_page.page = self.stacked_widget.indexOf(self.battle_page)
+            self.change_page(self.stacked_widget.indexOf(self.message_page))
+            
             print("no mana")
             return
         self.change_page(self.stacked_widget.indexOf(self.battle_page))
         # current_health = self.battle.mob.before_change_health
         self.card_showing.update_card(card.name, card.image_path)
         self.showing_card.show()
+        
         QTimer.singleShot(600, lambda:self.showing_card.hide())
         QTimer.singleShot(1000, lambda:self.continue_play_card(index))
 
@@ -701,6 +720,9 @@ class MainWindow(QMainWindow):
                 current_card.update_cooldown_display(card.cooldown)
                 # current_card.update_cooldown_display(card.cooldown, card.current_cooldown)
                 break
+        # counting = 0
+        # for card in self.deck.current_deck:
+        #     self.show_card_page.card_gallery[counting].update_cooldown_display(card.cooldown)
         self.enemy_page.update_effect_status()
         #card.in_cooldown()
         # if self.battle.mob.health<=0:

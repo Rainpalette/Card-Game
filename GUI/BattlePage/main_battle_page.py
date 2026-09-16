@@ -2,8 +2,11 @@ from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QVBoxLayout, QLa
 from PyQt5.QtGui import QPixmap, QTransform, QIcon
 from PyQt5.QtCore import Qt, QSize, pyqtSignal
 from PyQt5.QtGui import QPainter, QColor
-
-
+import json
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
+from DeckCreationPage.CreateDeckPage import *
 
 import sys
 #battle_function = BattleStage()
@@ -60,6 +63,7 @@ class Manabar(QLabel):
 class BattleBoard(QWidget):
     switch_to_page = pyqtSignal(int)
     end_turn = pyqtSignal(bool)
+    end_battle = pyqtSignal(bool)
     def __init__(self,battle):
         super().__init__()
         self.show_enemy_profile = False
@@ -154,6 +158,11 @@ class BattleBoard(QWidget):
         # self.enemy_damage_label = QLabel("Damage: 0")
         # self.enemy_damage_label.setStyleSheet("font-size: 20px;")
         
+        self.exit_button= QPushButton("Exit")
+        self.exit_button.setFixedSize(50,50)
+        self.exit_button.setStyleSheet("font-size: 20px;")
+        self.exit_button.clicked.connect(self.on_exit_button_clicked)
+        self.main_layout.addWidget(self.exit_button, 0, 0, Qt.AlignTop | Qt.AlignLeft)
         # dynamic_enemy_layout.addLayout(enemy_layout, Qt.AlignCenter)
         # dynamic_enemy_layout.addWidget(self.enemy_damage_label, alignment=Qt.AlignLeft)
         # self.main_layout.addLayout(dynamic_enemy_layout, 0, 1)
@@ -213,7 +222,7 @@ class BattleBoard(QWidget):
         self.player_health_bar = QLabel(self.player_image)
         self.player_health_bar.move(160,-10)
         self.player_health_bar.setText(f"{self.battle.player.health}")
-        self.player_health_bar.setStyleSheet("""font-size: 40px;
+        self.player_health_bar.setStyleSheet("""font-size: 35px;
                                              background-color: transparent;
                                              font-weight: bold;
                                              color: #344979;
@@ -221,7 +230,7 @@ class BattleBoard(QWidget):
         self.player_shield_bar = QLabel(self.player_image)
         self.player_shield_bar.move(0,-10)
         self.player_shield_bar.setText(f"{self.battle.player.shield}")
-        self.player_shield_bar.setStyleSheet("""font-size: 40px;
+        self.player_shield_bar.setStyleSheet("""font-size: 35px;
                                              background-color: transparent;
                                              font-weight: bold;
                                              color: #344979;
@@ -297,6 +306,10 @@ class BattleBoard(QWidget):
         self.end_turn.emit(True)
         # battle_function.end_turn(battle_function.card_deck)
         # battle_function.start_turn()
+
+    def on_exit_button_clicked(self):
+        self.switch_to_page.emit(11)
+        # self.end_battle.emit(True)
 
 
     def update_status(self,deck,page):
@@ -421,7 +434,18 @@ class ChooseEnemyProfile(QWidget):
         self.main_layout.addWidget(self.profile_image)
         self.setLayout(self.main_layout)
 
+class BackToMainMenuConfirmation(ConfirmationPage):
+    end_battle = pyqtSignal(bool)
+    def __init__(self):
+        super().__init__()
+        self.label.setText("Are you sure you want to return to the main menu?\nYour current battle progress will be lost.")
 
+    def on_click_cancel(self):
+        self.switch_to_page.emit(1)
+    
+    def on_click_yes(self):
+        self.switch_to_page.emit(0)
+        self.end_battle.emit(True)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ from Card.CardEffect import *
 
 card_effect = CardEffect()
 reduce_defense = defenseReduction()
+memory = Memory()
 class CardSetting(ABC):
     def __init__(self, name="", mana_cost=0, description="", card_type="", rarity="", cooldown=0, image_path="GUI/Afallen.jpg"):
         self.name = name
@@ -36,7 +37,7 @@ class NormalAttack(CardSetting):
         super().__init__(
             name="Normal Attack",
             mana_cost=1,
-            description="Deal 5 damage to the enemy.",
+            description="Deal 6 damage to the enemy.",
             card_type="Attack",
             rarity="Common",
             cooldown=3,
@@ -45,7 +46,7 @@ class NormalAttack(CardSetting):
         
 
     def use_card(self, battle):
-        card_effect.deal_damage(5,battle)
+        card_effect.deal_damage(6,battle)
         
 
 class Heal(CardSetting):
@@ -53,7 +54,7 @@ class Heal(CardSetting):
         super().__init__(
             name="Heal",
             mana_cost=1,
-            description="Restore 3 HP to yourself.",
+            description="Restore 6 HP to yourself.",
             card_type="Heal",
             rarity="Common",
             cooldown=2,
@@ -61,7 +62,7 @@ class Heal(CardSetting):
         )
 
     def use_card(self, battle):
-        card_effect.heal(3,battle)
+        card_effect.heal(6,battle)
 
 
 class Defense(CardSetting):
@@ -69,7 +70,7 @@ class Defense(CardSetting):
         super().__init__(
             name="Defense",
             mana_cost=1,
-            description="Gain 3 shield stacks.",
+            description="Gain 6 shield stacks.",
             card_type="Defense",
             rarity="Common",
             cooldown=2,
@@ -77,7 +78,7 @@ class Defense(CardSetting):
         )
 
     def use_card(self, battle):
-        card_effect.shield(3,battle)
+        card_effect.shield(6,battle)
 
 
 class ShieldCounter(CardSetting):
@@ -85,15 +86,16 @@ class ShieldCounter(CardSetting):
         super().__init__(
             name="Shield Counter",
             mana_cost=2,
-            description="Gain 3 shield stacks and deal 6 damage to the enemy.",
+            description="Gain 3 shield stacks and deal 7 damage to the enemy.",
             card_type="Defense",
             rarity="Common",
-            cooldown=4
+            cooldown=4,
+            image_path="Card/CardIcon/Shield Counter.jpeg"
         )
 
     def use_card(self, battle):
         card_effect.shield(3,battle)
-        card_effect.deal_damage(6,battle)
+        card_effect.deal_damage(7,battle)
 
 
 class HolyLight(CardSetting):
@@ -101,14 +103,15 @@ class HolyLight(CardSetting):
         super().__init__(
             name="Holy Light",
             mana_cost=1,
-            description="Deal 3 damage, restore 2HP",
+            description="Deal 5 damage, restore 2HP",
             card_type="Effect",
             rarity="Common",
-            cooldown=3
+            cooldown=3,
+            image_path="Card/CardIcon/Holy light.jpeg"
         )
 
     def use_card(self, battle):
-        card_effect.deal_damage(3, battle)
+        card_effect.deal_damage(5, battle)
         card_effect.heal(2, battle)
 
 
@@ -120,7 +123,8 @@ class Intimidate(CardSetting):
             description="Inflict 1 layer of defense reduction on the enemy for 3 turns.",
             card_type="Effect",
             rarity="Common",
-            cooldown=3
+            cooldown=3,
+            image_path="Card/CardIcon/Intimidate.jpeg"
         )
 
     def use_card(self, battle):
@@ -138,7 +142,7 @@ class CriticalStrike(CardSetting):
             description="Deal 8 damage to the enemy.",
             card_type="Attack",
             rarity="Common",
-            cooldown=5,
+            cooldown=4,
             image_path="Card/CardIcon/Axe.png"
         )
 
@@ -150,11 +154,11 @@ class Trick(CardSetting):
     def __init__(self):
         super().__init__(
             name="Trick",
-            mana_cost=2,
+            mana_cost=1,
             description="Remove the enemy's shield and deal damage equal to the shield value removed.",
             card_type="Effect",
             rarity="Common",
-            cooldown=5,
+            cooldown=3,
             image_path="Card/CardIcon/shield_broken.png"
         )
 
@@ -171,7 +175,8 @@ class MistVeil(CardSetting):
             description="Apply 3 stack of Mist and 1 stack of Lost effect to enemy.",
             card_type="Effect",
             rarity="Rare",
-            cooldown=6
+            cooldown=6,
+            image_path="Card/CardIcon/Mist Veil.jpeg"
         )
 
     def use_card(self, battle):
@@ -186,7 +191,8 @@ class DeepMist(CardSetting):
             description="Apply 6 stack of Mist effect to enemy.\nAt the end of your next turn, set the enemy's Mist stacks to 3 ",
             card_type="Effect",
             rarity="Rare",
-            cooldown=3
+            cooldown=3,
+            image_path="Card/CardIcon/Deep Mist.jpeg"
         )
 
     def use_card(self, battle):
@@ -204,7 +210,8 @@ class MidnightHour(CardSetting):
             description="Apply Midnight effect to enemy, last fot 2 rounds.\nMidnight: Mist damage cannot be blocked by shields\nthe same amount of damage is then dealt to the shield.",
             card_type="Effect",
             rarity="Rare",
-            cooldown=4
+            cooldown=4,
+            image_path="Card/CardIcon/castle.jpeg"
         )
 
     def use_card(self, battle):
@@ -218,7 +225,8 @@ class MistHunt(CardSetting):
             description="Deal 1 damage. Reduce the stack of Mist effect on enemy by 1,\nthen deal damage equals to the stack of Mist effect.",
             card_type="Attack",
             rarity="Rare",
-            cooldown=4
+            cooldown=4,
+            image_path="Card/CardIcon/Mist Hunt.jpeg"
             
         )
         self.additional_attack = False
@@ -244,7 +252,8 @@ class MistBlade(CardSetting):
             description="Deal 1 damage. Clear all Mist stacks on enemy, then increase this card's additional attack by the number of Mist stacks cleared.",
             card_type="Attack",
             rarity="Rare",
-            cooldown=2
+            cooldown=2,
+            image_path="Card/CardIcon/Mist Blade.jpeg"
         )
         self.additional_damage = 0
         self.activated_times = 0
@@ -270,7 +279,8 @@ class ShadowOfTheMist(CardSetting):
             description="When dealing damage to enemy using attack cards, add 1 stack of Midnight effect to enemy, last for 2 rounds.",
             card_type="Passive",
             rarity="Rare",
-            cooldown=0
+            cooldown=0,
+            image_path="Card/CardIcon/Shadow of the Mist.jpeg"
             )
         self.activate_on_attack = True
     def use_card(self, battle):
@@ -286,7 +296,8 @@ class RuinedForge(CardSetting):
             description="Inflict 2 stacks of Mist when you use cards other than attack cards.\nMist: At the start of enemy's turn, deal 1 damage per Mist stack.",
             card_type="Passive",
             rarity="Rare",
-            cooldown=0
+            cooldown=0,
+            image_path="Card/CardIcon/Ruined Forge.jpeg"
             )
         self.activate_on_attack = False
     def use_card(self, battle):
@@ -302,7 +313,8 @@ class CandyBullet(CardSetting):
             description="Deal 4 damage. Apply effect Candy to the target.\nCandy: When enemy holding this effect, attack enemy will randomly reduce two card's cooldown by 1.",
             card_type="Attack",
             rarity="Rare",
-            cooldown=5
+            cooldown=5,
+            image_path="Card/CardIcon/Candy bullet.jpeg"
         )
 
     def use_card(self, battle):
@@ -317,7 +329,8 @@ class SweetSolace(CardSetting):
             description="Reduce all the card's maximum cooldown by 1.",
             card_type="Effect",
             rarity="Rare",
-            cooldown=6
+            cooldown=6,
+            image_path="Card/CardIcon/Sweet Solace.jpeg"
         )
         self.effect_on_card = True
         self.effect_on_battle_content = False
@@ -337,7 +350,8 @@ class OathOfResolve(CardSetting):
             description="When the game starts, increase all cards maximum cooldown by 3. Reduce the damage dealt of this card by the sum of all cards' maximum cooldowns. Deal 60 damage to enemy.",
             card_type="Attack",
             rarity="Rare",
-            cooldown=7
+            cooldown=7,
+            image_path="Card/CardIcon/necklace.jpeg"
         )
         self.effect_on_card = True
         self.effect_on_battle_content = True
@@ -365,7 +379,8 @@ class Redemption(CardSetting):
             description="End the cooldown of the card that have the highest cooldown. According to the cooldown remain, increase the cooldown of this card for 1 time. Restore mana to full.",
             card_type="Effect",
             rarity="Rare",
-            cooldown=16
+            cooldown=16,
+            image_path="Card/CardIcon/Redemption.jpeg"
         )
         self.effect_on_card = True
         self.effect_on_battle_content = True
@@ -381,15 +396,85 @@ class Redemption(CardSetting):
             return
         else:
             target_card.current_cooldown = 0
-            battle.player.mana = battle.player.max_mana
+            battle.player.mana +=2
+
+class Frozen_Seal(CardSetting):
+    def __init__(self):
+        super().__init__(
+            name="Frozen Seal",
+            mana_cost=2,
+            description="Gain 7 shield, restore 5 HP.",
+            card_type="Effect",
+            rarity="Rare",
+            cooldown=3,
+            image_path="Card/CardIcon/Frozen Seal.jpeg"
+        )
+        # self.effect_on_card = True
+        # self.effect_on_battle_content = True
+    
+    def use_card(self, battle):
+        card_effect.shield(7, battle)
+        card_effect.heal(5, battle)
+
+class SnowDance(CardSetting):
+    def __init__(self):
+        super().__init__(
+            name="Snow Dance",
+            mana_cost=1,
+            description="Inflict 1 stack of Memory effect to enemy for 3 turns.\nMemory: Reduce enemy's attack and defense by 1.",
+            card_type="Effect",
+            rarity="Rare",
+            cooldown=5,
+            image_path="Card/CardIcon/Snow Dance.jpeg"
+        )
+
+    def use_card(self, battle):
+        battle.mob.add_effect(Memory())
+        memory.apply_effect(battle)
+
+
+class WinterFestival(CardSetting):
+    def __init__(self):
+        super().__init__(
+            name="Winter Festival",
+            mana_cost=1,
+            description="Deal 3 damage, restore 4 HP and gain 4 shield.",
+            card_type="Attack",
+            rarity="Rare",
+            cooldown=5,
+            image_path="Card/CardIcon/Winter Festival.jpeg"
+        )
+
+    def use_card(self, battle):
+        card_effect.deal_damage(3, battle)
+        card_effect.heal(4, battle)
+        card_effect.shield(4, battle)
+
+class IronBlood(CardSetting):
+    def __init__(self):
+        super().__init__(
+            name="Iron Blood",
+            mana_cost=1,
+            description="Gain 5 shield and inflict 1 layer of defense reduction on the enemy for 3 turns.",
+            card_type="Defense",
+            rarity="Rare",
+            cooldown=5,
+            image_path="Card/CardIcon/Iron Blood.jpeg"
+        )
+
+    def use_card(self, battle):
+        card_effect.shield(5, battle)
+        battle.mob.add_effect(defenseReduction())
+        # reduce_defense.apply_effect(battle)
 
 class Card_list():
     def __init__(self):
         self.card_list = [NormalAttack(),Heal(),Defense(),ShieldCounter(),
                           HolyLight(),Intimidate(),CriticalStrike(),Trick(),CandyBomb(),MistVeil(),
                           DeepMist(),MidnightHour(),MistHunt(),MistBlade(),ShadowOfTheMist(),
-                          RuinedForge(),CandyBullet(),SweetSolace(),OathOfResolve(), Redemption()
-                          ]
+                          RuinedForge(),CandyBullet(),SweetSolace(),OathOfResolve(), Redemption(),Frozen_Seal(),
+                            SnowDance(),WinterFestival(),IronBlood()
+                        ]
     
     # def save_cards_to_json(self, filename="Data/CardDetails.json"):
     #     """

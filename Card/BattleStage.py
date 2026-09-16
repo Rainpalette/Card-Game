@@ -110,9 +110,7 @@ class BattleStage:
                 if effect.fixed_duration <= 0:
                     effect.turn_down_mist()
                     effect.activate_fixed_duration = False
-            # if effect.name == "Mist" and (effect.activate_midnight):
-            #     effect.apply_midnight(self.battle)
-            #     effect.activate_midnight = False
+            
 
 
     def start_turn(self):
@@ -131,15 +129,7 @@ class BattleStage:
     def boss_turn(self):
         skill_name = self.mob.use_skill()
         return skill_name
-        # while True:
-        #     if self.mob.mana <=0:
-        #         return
-        #     if self.is_battle_over():
-        #         return
-        #     self.mob.use_skill()
-
-    # def player_turn(self):
-    #     print("player")
+        
 
     def check_card_mana(self, card):
         return card.mana_cost <= self.battle.player.mana
@@ -155,8 +145,7 @@ class BattleStage:
             card.use_card(deck)
             self.player.mana -= card.mana_cost
             card.cooldown_card()
-            # for card in deck.current_deck:
-            #     print(f"Card: {card.name}, Cooldown: {card.current_cooldown}")
+            
             return
         if card.effect_on_card and card.effect_on_battle_content:
             card.use_card(self.battle,deck)

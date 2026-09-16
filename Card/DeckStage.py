@@ -11,11 +11,6 @@ class DeckStage:
         self.in_use_deck_name = "Default deck"
         self.latest_deck_name = ""
 
-    # def add_card(self, card):
-    #     if len(self.deck)>=12:
-    #         return False
-    #     else:
-    #         self.deck.append(card)
 
     def add_card(self, card):
         if len(self.current_deck)>=12:

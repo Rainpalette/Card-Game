@@ -94,6 +94,7 @@ class CompendiumPage(QWidget):
                     card = CardInDeck(self.cards_info['cards'][card_count]['name'], self.cards_info['cards'][card_count]['image_path'])
                     card.id = card_count+1
                     card.card_image.setScaledContents(True)
+                    card.card_name.setStyleSheet("font:17px;")
                     card.leftClicked.connect(self.on_card_left_clicked)
                     #card.rightClicked.connect(self.on_card_right_clicked)
                     # card.clicked.connect(self.on_card_left_clicked)
@@ -151,8 +152,6 @@ class CompendiumPage(QWidget):
             # self.card_list[card_count].refresh_card()
             # card_count+=1
 
-    # def on_card_right_clicked(self, name):
-    #     pass
 
     def on_card_left_clicked(self, name):
         self.send_name.emit(name)

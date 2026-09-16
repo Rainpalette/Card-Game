@@ -239,9 +239,9 @@ class crownSkillSet:
 
         for _ in range(10):
             skill = random.choice(available)
-            if self.battle.player.shield >0 and self.skills[2].repeatable>0:
-                skill = self.skills[2]
-            elif self.battle.mob.mana>8:
+            # if self.battle.player.shield >0 and self.skills[2].repeatable>0:
+            #     skill = self.skills[2]
+            if self.battle.mob.mana>8:
                 attack = [self.skills[0],
                           self.skills[3],
                           self.skills[5]

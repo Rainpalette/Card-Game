@@ -409,12 +409,9 @@ class CreateDeckPage(QWidget):
                 card_showcase.set_card_name(card_data["name"])
                 # card_showcase.set_card_name(card_data.name)
                 card_showcase.image_path = card_data["image_path"] if card_data["name"] else ""
-                if card_data["name"]:  # Only connect if the card has a name
-                # if card_data.name:  # Only connect if the card has a name
-                #     # card_showcase.image_path = card_data.image_path
-                #     card_showcase.image_path = "GUI/BattlePage/Afallen.jpg"
-                    card_showcase.leftClicked.connect(self.on_card_right_clicked)
-                    card_showcase.rightClicked.connect(self.delete_card_showcase)
+                if card_data["name"]:  
+                    card_showcase.leftClicked.connect(self.delete_card_showcase)
+                    card_showcase.rightClicked.connect(self.on_card_right_clicked)
             else:
                 card_showcase.set_card_name("")
                 card_showcase.image_path = ""
@@ -434,19 +431,7 @@ class CreateDeckPage(QWidget):
         self.save_deck.emit(data)
         self.current_deck_name = ""
     
-    # def set_as_current_deck(self):
-    #     deck_name = self.current_deck_name 
-    #     self.set_current_deck.emit(deck_name)
-    # def save_deck(self,dictionary,deck_stage):
-    #     with open("Data/CardDeckRecord.json", "w", encoding="utf-8") as f:
-    #         json.dump(dictionary, f, ensure_ascii=False, indent=4)
-    #     deck_stage.deck_list.append(dictionary)
-
-    # def mousePressEvent(self, event):
-    #     if event.button() == Qt.RightButton:
-    #         self.clicked.emit(self.id)
-    #     if event.button() == Qt.LeftButton:
-    #         self.clicked.emit(18)
+   
 
 class ConfirmationPage(QWidget):
     switch_to_page = pyqtSignal(int)
@@ -475,10 +460,6 @@ class ConfirmationPage(QWidget):
         confirmationLayout.addWidget(self.label)
         confirmationLayout.addLayout(buttonLayout)
 
-        #self.background = QLabel()
-        #self.background.setMaximumSize(600,200)
-        #self.background.setStyleSheet()
-        #self.background.setLayout(confirmationLayout)
         page_layout = QGridLayout(self)
         #page_layout.addWidget(self.background,1,1)
         page_layout.addLayout(confirmationLayout,1,1)
@@ -500,12 +481,14 @@ class ConfirmationPage(QWidget):
 
 class Message_Page(QWidget):
     switch_to_page = pyqtSignal(int)
+    emit_clear_message = pyqtSignal(bool)
     def __init__(self, message=""):
         super().__init__()
         self.message = message
         self.label = QLabel(self.message)
-        self.label.setStyleSheet("font-size: 30px;")
-
+        self.label.setStyleSheet("font-size: 35px;color:black;")
+        # self.setStyleSheet("background-color:#d5dbe2")
+        self.page = 5
         self.okButton = QPushButton("OK")
         self.okButton.setMaximumSize(100,100)
         self.okButton.clicked.connect(self.on_click_ok)
@@ -525,8 +508,9 @@ class Message_Page(QWidget):
         page_layout.setColumnStretch(2,1)
 
     def on_click_ok(self):
-        self.switch_to_page.emit(8)
-    
+        self.switch_to_page.emit(self.page)
+        self.emit_clear_message.emit(True)
+
     def set_message(self, message):
         self.message = message
         self.label.setText(self.message)
@@ -534,6 +518,9 @@ class Message_Page(QWidget):
     def clear_message(self):
         self.message = ""
         self.label.setText(self.message)
+    
+    def reset(self):
+        self.page = 5
 
 
 
